@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="false" scanPeriod="30 seconds">
+
+    <property name="LOG_TEMP" value="/tmp/owms"/>
+    <property name="MODULE_NAME" value="COMMON-Service"/>
+
+    <include resource="logback-appenders.xml"/>
+    <include resource="logback-loggers.xml"/>
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <logger name="org.hibernate.SQL" level="OFF"/>
+    <logger name="org.hibernate.type" level="OFF"/>
+    <logger name="org.openwms" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
