@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PieceTest {
 
     @Test void testCompareTo() {
-        assertEquals(1, of(50, PieceUnit.PC).compareTo(Piece.of(30)));
+        assertEquals(1, Piece.of(50, PieceUnit.PC).compareTo(Piece.of(30)));
         assertEquals(-1, Piece.of(30).compareTo(Piece.of(50, PieceUnit.PC)));
         assertThat(Piece.of(30).compareTo(Piece.of(30))).isEqualTo(0);
     }
