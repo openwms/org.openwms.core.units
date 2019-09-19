@@ -33,9 +33,9 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
     /** The magnitude of the Piece. */
     private BigDecimal magnitude;
     /** Constant for a zero value. */
-    public static final Piece ZERO = new Piece(0);
+    public static final Piece ZERO = Piece.of(0);
 
-    /* ----------------------------- methods ------------------- */
+    /* ----------------------------- constructors ------------------- */
     /**
      * Accessed by persistence provider.
      */
@@ -44,11 +44,16 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
     }
 
     /**
-     * @see UnitType#getMeasurable()
+     * Create a new Piece.
+     *
+     * @param magnitude
+     *            The magnitude of the Piece
+     * @param unitType
+     *            The unit of measure
      */
-    @Override
-    public Piece getMeasurable() {
-        return this;
+    private Piece(BigDecimal magnitude, PieceUnit unitType) {
+        this.magnitude = magnitude;
+        this.unitType = unitType;
     }
 
     /**
@@ -59,9 +64,8 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
      * @param unitType
      *            The unit of measure
      */
-    public Piece(int magnitude, PieceUnit unitType) {
-        this.magnitude = new BigDecimal(magnitude);
-        this.unitType = unitType;
+    public static Piece of(int magnitude, PieceUnit unitType) {
+        return new Piece(new BigDecimal(magnitude), unitType);
     }
 
     /**
@@ -70,9 +74,8 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
      * @param magnitude
      *            The magnitude of the Piece as int
      */
-    public Piece(int magnitude) {
-        this.magnitude = new BigDecimal(magnitude);
-        this.unitType = PieceUnit.PC.getBaseUnit();
+    public static Piece of(int magnitude) {
+        return new Piece(new BigDecimal(magnitude), PieceUnit.PC.getBaseUnit());
     }
 
     /**
@@ -83,9 +86,8 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
      * @param unitType
      *            The unit of measure
      */
-    public Piece(BigDecimal magnitude, PieceUnit unitType) {
-        this.magnitude = magnitude;
-        this.unitType = unitType;
+    public static Piece of(BigDecimal magnitude, PieceUnit unitType) {
+        return new Piece(magnitude, unitType);
     }
 
     /**
@@ -94,15 +96,22 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
      * @param magnitude
      *            The magnitude of the Piece as BigDecimal
      */
-    public Piece(BigDecimal magnitude) {
-        this.magnitude = magnitude;
-        this.unitType = PieceUnit.PC.getBaseUnit();
+    public static Piece of(BigDecimal magnitude) {
+        return new Piece(magnitude, PieceUnit.PC.getBaseUnit());
+    }
+
+    /* ----------------------------- methods ------------------- */
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Piece getMeasurable() {
+        return this;
     }
 
     /**
-     * Returns the magnitude of the Piece.
-     * 
-     * @return The magnitude
+     * {@inheritDoc}
      */
     @Override
     public BigDecimal getMagnitude() {
@@ -110,9 +119,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
     }
 
     /**
-     * Returns the unit of the Piece.
-     * 
-     * @return The unit
+     * {@inheritDoc}
      */
     @Override
     public PieceUnit getUnitType() {

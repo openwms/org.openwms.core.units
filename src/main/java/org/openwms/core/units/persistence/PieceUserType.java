@@ -109,7 +109,7 @@ public class PieceUserType implements CompositeUserType {
             return null;
         }
         int amount = resultSet.getInt(names[1]);
-        return new Piece(amount, PieceUnit.valueOf(unitType));
+        return Piece.of(amount, PieceUnit.valueOf(unitType));
     }
 
     /**

@@ -54,7 +54,7 @@ public class UnitUserType implements CompositeUserType {
      */
     @Override
     public String[] getPropertyNames() {
-        return new String[]{"unitType", "amount"};
+        return new String[]{"unitType", "magnitude"};
     }
 
     /**
@@ -148,7 +148,7 @@ public class UnitUserType implements CompositeUserType {
         String unitTypeClass = val[1];
         if (Piece.class.getCanonicalName().equals(unitTypeClass)) {
             int amount = rs.getInt(names[1]);
-            return new Piece(amount, PieceUnit.valueOf(unitType));
+            return Piece.of(amount, PieceUnit.valueOf(unitType));
         } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {
             BigDecimal amount = rs.getBigDecimal(names[1]);
             return new Weight(amount, WeightUnit.valueOf(unitType));
