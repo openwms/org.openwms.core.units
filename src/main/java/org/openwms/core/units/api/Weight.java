@@ -23,11 +23,11 @@ import java.math.BigDecimal;
  * 
  * @author Heiko Scherrer
  */
-public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, UnitType, Serializable {
+public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Serializable {
 
-    /** The unit of the <code>Weight</code>. */
-    private WeightUnit unit;
-    /** The magnitude of the <code>Weight</code>. */
+    /** The unit of the Weight. */
+    private WeightUnit unitType;
+    /** The magnitude of the Weight. */
     private BigDecimal magnitude;
     /** Constant for a zero value. */
     public static final Weight ZERO = new Weight("0");
@@ -41,63 +41,55 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, UnitT
     }
 
     /**
-     * Create a new <code>Weight</code>.
+     * Create a new Weight.
      * 
      * @param magnitude
-     *            The magnitude of the <code>Weight</code>
-     * @param unit
+     *            The magnitude of the Weight
+     * @param unitType
      *            The unit of measure
      */
-    public Weight(BigDecimal magnitude, WeightUnit unit) {
+    public Weight(BigDecimal magnitude, WeightUnit unitType) {
         this.magnitude = magnitude;
-        this.unit = unit;
+        this.unitType = unitType;
     }
 
     /**
-     * Create a new <code>Weight</code>.
+     * Create a new Weight.
      * 
      * @param magnitude
-     *            The magnitude of the <code>Weight</code> as String
-     * @param unit
+     *            The magnitude of the Weight as String
+     * @param unitType
      *            The unit of measure
      */
-    public Weight(String magnitude, WeightUnit unit) {
+    public Weight(String magnitude, WeightUnit unitType) {
         this.magnitude = new BigDecimal(magnitude);
-        this.unit = unit;
+        this.unitType = unitType;
     }
 
     /**
-     * Create a new <code>Weight</code>.
+     * Create a new Weight.
      * 
      * @param magnitude
-     *            The magnitude of the <code>Weight</code>
+     *            The magnitude of the Weight
      */
     public Weight(BigDecimal magnitude) {
         this.magnitude = magnitude;
-        this.unit = WeightUnit.T.getBaseUnit();
+        this.unitType = WeightUnit.T.getBaseUnit();
     }
 
     /**
-     * Create a new <code>Weight</code>.
+     * Create a new Weight.
      * 
      * @param magnitude
-     *            The magnitude of the <code>Weight</code> as String
+     *            The magnitude of the Weight as String
      */
     public Weight(String magnitude) {
         this.magnitude = new BigDecimal(magnitude);
-        this.unit = WeightUnit.T.getBaseUnit();
+        this.unitType = WeightUnit.T.getBaseUnit();
     }
 
     /**
-     * @see UnitType#getMeasurable()
-     */
-    @Override
-    public Weight getMeasurable() {
-        return this;
-    }
-
-    /**
-     * Returns the magnitude of the <code>Weight</code>.
+     * Returns the magnitude of the Weight.
      * 
      * @return The magnitude
      */
@@ -107,13 +99,13 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, UnitT
     }
 
     /**
-     * Returns the unit of the <code>Weight</code>.
+     * Returns the unit of the Weight.
      * 
      * @return The unit
      */
     @Override
     public WeightUnit getUnitType() {
-        return unit;
+        return unitType;
     }
 
     /**

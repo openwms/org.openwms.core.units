@@ -20,17 +20,13 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
-import org.openwms.core.units.api.AbstractMeasure;
-import org.openwms.core.units.api.Measurable;
-import org.openwms.core.units.api.Piece;
+import org.openwms.core.units.api.BaseUnit;
 import org.openwms.core.units.api.PieceUnit;
-import org.openwms.core.units.api.Weight;
 import org.openwms.core.units.api.WeightUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,33 +34,33 @@ import java.sql.SQLException;
 import static java.lang.String.format;
 
 /**
- * An UnitUserType is used by Hibernate as converter for custom {@code Unit} types. Only subclasses of {@link AbstractMeasure} are supported
+ * A BaseUnitUserType is used by Hibernate as converter for custom {@code BaseUnit} types. Only subclasses of {@link BaseUnit} are supported
  * by this type converter.
  *
  * @author Heiko Scherrer
  */
-public class UnitUserType implements CompositeUserType {
+public class BaseUnitUserType implements CompositeUserType {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnitUserType.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseUnitUserType.class);
 
     /**
      * {@inheritDoc}
      * <p>
-     * We expect that every unit has two fields, named {@code unitType} and {@code magnitude}.
+     * Only the property {@code baseUnit} is accepted.
      */
     @Override
     public String[] getPropertyNames() {
-        return new String[]{"unitType", "magnitude"};
+        return new String[]{"baseUnit"};
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * We're going to persist both fields as Strings.
+     * Property is persisted as concatenated String
      */
     @Override
     public Type[] getPropertyTypes() {
-        return new Type[]{StandardBasicTypes.STRING, StandardBasicTypes.STRING};
+        return new Type[]{StandardBasicTypes.STRING};
     }
 
     /**
@@ -72,40 +68,27 @@ public class UnitUserType implements CompositeUserType {
      */
     @Override
     public Object getPropertyValue(Object component, int property) {
-        if (component instanceof Piece) {
-            Piece piece = (Piece) component;
-            return property == 0 ? piece.getUnitType() : piece.getMagnitude();
-        } else if (component instanceof Weight) {
-            Weight weight = (Weight) component;
-            return property == 0 ? weight.getUnitType() : weight.getMagnitude();
-        }
-        throw new TypeMismatchException(format("Incompatible type [%s]", component.getClass()));
+        return component;
     }
 
     /**
      * {@inheritDoc}
-     * <p>
-     * We have immutable types, throw an UnsupportedOperationException here.
      */
     @Override
     public void setPropertyValue(Object component, int property, Object value) {
-        throw new UnsupportedOperationException("Unit types are immutable");
+        throw new UnsupportedOperationException("BaseUnit types are immutable");
     }
 
     /**
      * {@inheritDoc}
-     * <p>
-     * We do not know the concrete implementation here and return an Unit class type.
      */
     @Override
     public Class returnedClass() {
-        return Measurable.class;
+        return BaseUnit.class;
     }
 
     /**
      * {@inheritDoc}
-     * <p>
-     * Delegate to Unit implementation.
      */
     @Override
     public boolean equals(Object x, Object y) {
@@ -120,8 +103,6 @@ public class UnitUserType implements CompositeUserType {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * Delegate to Unit implementation.
      */
     @Override
     public int hashCode(Object x) {
@@ -131,10 +112,10 @@ public class UnitUserType implements CompositeUserType {
     /**
      * {@inheritDoc}
      * <p>
-     * Try to re-assign the value read from the database to some type of Unit. Currently supported types:
+     * Try to re-assign the value read from the database to some type of BaseUnit. Currently supported types:
      * <ul>
-     * <li>Piece</li>
-     * <li>Weight</li>
+     * <li>PieceUnit</li>
+     * <li>WeightUnit</li>
      * </ul>
      */
     @Override
@@ -146,42 +127,33 @@ public class UnitUserType implements CompositeUserType {
         String[] val = rs0.split("@");
         String unitType = val[0];
         String unitTypeClass = val[1];
-        if (Piece.class.getCanonicalName().equals(unitTypeClass)) {
-            int amount = rs.getInt(names[1]);
-            return Piece.of(amount, PieceUnit.valueOf(unitType));
-        } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {
-            BigDecimal amount = rs.getBigDecimal(names[1]);
-            return new Weight(amount, WeightUnit.valueOf(unitType));
+        if (PieceUnit.class.getCanonicalName().equals(unitTypeClass)) {
+            return PieceUnit.valueOf(unitType);
+        } else if (WeightUnit.class.getCanonicalName().equals(unitTypeClass)) {
+            return WeightUnit.valueOf(unitType);
         }
         throw new TypeMismatchException(format("Incompatible type: [%s]", unitTypeClass));
     }
 
     /**
      * {@inheritDoc}
-     * <p>
-     * We've to store the concrete classname as well.
      */
     @Override
     public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws SQLException {
         if (value == null) {
             st.setNull(index, StandardBasicTypes.STRING.sqlType());
-            st.setNull(index + 1, StandardBasicTypes.STRING.sqlType());
         } else {
-            if (value instanceof Piece) {
-                Piece piece = (Piece) value;
-                st.setString(index, piece.getUnitType().toString() + "@" + Piece.class.getCanonicalName());
-                st.setString(index + 1, piece.getMagnitude().toPlainString());
+            if (value instanceof PieceUnit) {
+                PieceUnit piece = (PieceUnit) value;
+                st.setString(index, piece.name() + "@" + PieceUnit.class.getCanonicalName());
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("Binding [{}@{}] to parameter [{}]", piece.getUnitType(), Piece.class.getCanonicalName(), index);
-                    LOGGER.trace("Binding [{}] to parameter [{}]", piece.getMagnitude().toPlainString(), (index + 1));
+                    LOGGER.trace("Binding [{}@{}] to parameter [{}]", piece.name(), PieceUnit.class.getCanonicalName(), index);
                 }
-            } else if (value instanceof Weight) {
-                Weight weight = (Weight) value;
-                st.setString(index, weight.getUnitType().toString() + "@" + Weight.class.getCanonicalName());
-                st.setString(index + 1, weight.getMagnitude().toPlainString());
+            } else if (value instanceof WeightUnit) {
+                WeightUnit weight = (WeightUnit) value;
+                st.setString(index, weight.name() + "@" + WeightUnit.class.getCanonicalName());
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("Binding [{}@{}] to parameter [{}]", weight.getUnitType(), Weight.class.getCanonicalName(), index);
-                    LOGGER.trace("Binding [{}] to parameter [{}]", weight.getMagnitude().toPlainString(), (index + 1));
+                    LOGGER.trace("Binding [{}@{}] to parameter [{}]", weight.name(), WeightUnit.class.getCanonicalName(), index);
                 }
             } else {
                 throw new TypeMismatchException(format("Incompatible type: [%s]", value.getClass().getCanonicalName()));
@@ -199,8 +171,6 @@ public class UnitUserType implements CompositeUserType {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * Non Unit type is mutable.
      */
     @Override
     public boolean isMutable() {

@@ -15,6 +15,8 @@
  */
 package org.openwms.core.units.api;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ import java.util.List;
  * @author Heiko Scherrer
  * @GlossaryTerm
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public interface BaseUnit<T extends BaseUnit<T>> {
 
     /**
@@ -40,4 +43,6 @@ public interface BaseUnit<T extends BaseUnit<T>> {
      * @return The base unit type
      */
     T getBaseUnit();
+
+    String name();
 }

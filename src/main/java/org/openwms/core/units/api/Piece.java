@@ -24,7 +24,7 @@ import java.math.RoundingMode;
  * 
  * @author Heiko Scherrer
  */
-public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType, Serializable {
+public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializable {
 
     private static final BigDecimal SHIFTER = new BigDecimal(12);
 
@@ -101,15 +101,6 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, UnitType
     }
 
     /* ----------------------------- methods ------------------- */
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Piece getMeasurable() {
-        return this;
-    }
-
     /**
      * {@inheritDoc}
      */
