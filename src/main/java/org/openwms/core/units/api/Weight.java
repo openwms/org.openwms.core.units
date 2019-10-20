@@ -18,6 +18,8 @@ package org.openwms.core.units.api;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import static org.openwms.core.units.api.WeightUnit.KG;
+
 /**
  * A Weight represents a real world weight, that comes with an <code>Unit</code> and a value.
  * 
@@ -30,7 +32,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
     /** The magnitude of the Weight. */
     private BigDecimal magnitude;
     /** Constant for a zero value. */
-    public static final Weight ZERO = new Weight("0");
+    public static final Weight ZERO = Weight.of(0);
 
     /* ----------------------------- methods ------------------- */
     /**
@@ -43,49 +45,50 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
     /**
      * Create a new Weight.
      * 
-     * @param magnitude
-     *            The magnitude of the Weight
-     * @param unitType
-     *            The unit of measure
+     * @param magnitude The magnitude of the Weight
+     * @param unitType The unit of measure
      */
-    public Weight(BigDecimal magnitude, WeightUnit unitType) {
+    private Weight(BigDecimal magnitude, WeightUnit unitType) {
         this.magnitude = magnitude;
         this.unitType = unitType;
     }
 
     /**
      * Create a new Weight.
-     * 
-     * @param magnitude
-     *            The magnitude of the Weight as String
-     * @param unitType
-     *            The unit of measure
+     *
+     * @param magnitude The magnitude of the Weight
+     * @param unitType The unit of measure
      */
-    public Weight(String magnitude, WeightUnit unitType) {
-        this.magnitude = new BigDecimal(magnitude);
-        this.unitType = unitType;
+    public static Weight of(int magnitude, WeightUnit unitType) {
+        return new Weight(new BigDecimal(magnitude), unitType);
     }
 
     /**
      * Create a new Weight.
-     * 
-     * @param magnitude
-     *            The magnitude of the Weight
+     *
+     * @param magnitude The magnitude of the Weight as int
      */
-    public Weight(BigDecimal magnitude) {
-        this.magnitude = magnitude;
-        this.unitType = WeightUnit.T.getBaseUnit();
+    public static Weight of(int magnitude) {
+        return new Weight(new BigDecimal(magnitude), KG.getBaseUnit());
     }
 
     /**
      * Create a new Weight.
-     * 
-     * @param magnitude
-     *            The magnitude of the Weight as String
+     *
+     * @param magnitude The magnitude of the Weight
+     * @param unitType The unit of measure
      */
-    public Weight(String magnitude) {
-        this.magnitude = new BigDecimal(magnitude);
-        this.unitType = WeightUnit.T.getBaseUnit();
+    public static Weight of(BigDecimal magnitude, WeightUnit unitType) {
+        return new Weight(magnitude, unitType);
+    }
+
+    /**
+     * Create a new Weight.
+     *
+     * @param magnitude The magnitude of the Weight as BigDecimal
+     */
+    public static Weight of(BigDecimal magnitude) {
+        return new Weight(magnitude, KG.getBaseUnit());
     }
 
     /**
@@ -132,17 +135,43 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
         return new Weight(getMagnitude().scaleByPowerOfTen((this.getUnitType().ordinal() - unt.ordinal()) * 3), unt);
     }
 
+    @Override
+    public Measurable<BigDecimal, Weight, WeightUnit> add(Measurable<BigDecimal, Weight, WeightUnit> other) {
+        if (this.unitType.ordinal() > other.getUnitType().ordinal()) {
+            int factor = this.unitType.ordinal() - other.getUnitType().ordinal();
+            return Weight.of(this.magnitude.scaleByPowerOfTen(factor * 3).add(other.getMagnitude()), other.getUnitType());
+        } else if (this.unitType.ordinal() < other.getUnitType().ordinal()) {
+            int factor = other.getUnitType().ordinal() - this.unitType.ordinal();
+            return Weight.of(other.getMagnitude().scaleByPowerOfTen(factor * 3).add(this.magnitude), this.unitType);
+        }
+        return Weight.of(other.getMagnitude().add(this.magnitude), this.unitType);
+    }
+
+    @Override
+    public Measurable<BigDecimal, Weight, WeightUnit> subtract(Measurable<BigDecimal, Weight, WeightUnit> other) {
+        if (this.unitType.ordinal() > other.getUnitType().ordinal()) {
+            int factor = this.unitType.ordinal() - other.getUnitType().ordinal();
+            return Weight.of(this.magnitude.scaleByPowerOfTen(factor * 3).subtract(other.getMagnitude()), other.getUnitType());
+        } else if (this.unitType.ordinal() < other.getUnitType().ordinal()) {
+            int factor = other.getUnitType().ordinal() - this.unitType.ordinal();
+            return Weight.of(this.magnitude.subtract(other.getMagnitude().scaleByPowerOfTen(factor * 3)), this.unitType);
+        }
+        return Weight.of(this.magnitude.subtract(other.getMagnitude()), this.unitType);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public int compareTo(Weight o) {
         if (o.getUnitType().ordinal() > this.getUnitType().ordinal()) {
-            return -1;
+            int factor = o.getUnitType().ordinal() - this.getUnitType().ordinal();
+            return this.magnitude.compareTo(o.magnitude.scaleByPowerOfTen(factor * 3));
         } else if (o.getUnitType().ordinal() < this.getUnitType().ordinal()) {
-            return 1;
+            int factor = this.getUnitType().ordinal() - o.getUnitType().ordinal();
+            return this.magnitude.scaleByPowerOfTen(factor * 3).compareTo(o.magnitude);
         } else {
-            return this.getMagnitude().compareTo(o.getMagnitude());
+            return this.magnitude.compareTo(o.magnitude);
         }
     }
 
@@ -177,14 +206,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
             return false;
         }
         Weight other = (Weight) obj;
-        if (getMagnitude() == null) {
-            if (other.getMagnitude() != null) {
-                return false;
-            }
-        } else if (!getMagnitude().equals(other.getMagnitude())) {
-            return false;
-        }
-        return getUnitType() == other.getUnitType();
+        return 0 == other.compareTo(this);
     }
 
     /**

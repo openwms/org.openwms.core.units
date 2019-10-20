@@ -19,6 +19,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import static org.openwms.core.units.api.PieceUnit.DOZ;
+import static org.openwms.core.units.api.PieceUnit.PC;
+
 /**
  * A Piece.
  * 
@@ -46,10 +49,8 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      *
-     * @param magnitude
-     *            The magnitude of the Piece
-     * @param unitType
-     *            The unit of measure
+     * @param magnitude The magnitude of the Piece
+     * @param unitType The unit of measure
      */
     private Piece(BigDecimal magnitude, PieceUnit unitType) {
         this.magnitude = magnitude;
@@ -59,10 +60,8 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      * 
-     * @param magnitude
-     *            The magnitude of the Piece
-     * @param unitType
-     *            The unit of measure
+     * @param magnitude The magnitude of the Piece
+     * @param unitType The unit of measure
      */
     public static Piece of(int magnitude, PieceUnit unitType) {
         return new Piece(new BigDecimal(magnitude), unitType);
@@ -71,20 +70,17 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      * 
-     * @param magnitude
-     *            The magnitude of the Piece as int
+     * @param magnitude The magnitude of the Piece as int
      */
     public static Piece of(int magnitude) {
-        return new Piece(new BigDecimal(magnitude), PieceUnit.PC.getBaseUnit());
+        return new Piece(new BigDecimal(magnitude), PC.getBaseUnit());
     }
 
     /**
      * Create a new Piece.
      * 
-     * @param magnitude
-     *            The magnitude of the Piece
-     * @param unitType
-     *            The unit of measure
+     * @param magnitude The magnitude of the Piece
+     * @param unitType The unit of measure
      */
     public static Piece of(BigDecimal magnitude, PieceUnit unitType) {
         return new Piece(magnitude, unitType);
@@ -93,11 +89,10 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      * 
-     * @param magnitude
-     *            The magnitude of the Piece as BigDecimal
+     * @param magnitude The magnitude of the Piece as BigDecimal
      */
     public static Piece of(BigDecimal magnitude) {
-        return new Piece(magnitude, PieceUnit.PC.getBaseUnit());
+        return new Piece(magnitude, PC.getBaseUnit());
     }
 
     /* ----------------------------- methods ------------------- */
@@ -122,7 +117,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
      */
     @Override
     public boolean isZero() {
-        return Piece.ZERO.equals(new Piece(this.getMagnitude(), PieceUnit.DOZ));
+        return Piece.ZERO.equals(new Piece(this.getMagnitude(), DOZ));
     }
 
     /**
@@ -138,12 +133,40 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
      */
     @Override
     public Piece convertTo(PieceUnit unt) {
-        if (PieceUnit.PC == unt && this.getUnitType() == PieceUnit.DOZ) {
-            return new Piece(this.getMagnitude().multiply(SHIFTER), PieceUnit.PC);
-        } else if (PieceUnit.DOZ == unt && this.getUnitType() == PieceUnit.PC) {
-            return new Piece(this.getMagnitude().divide(SHIFTER, 0, RoundingMode.DOWN), PieceUnit.DOZ);
+        if (this.unitType == DOZ && unt == PC) {
+            return Piece.of(this.magnitude.multiply(SHIFTER), PC);
+        } else if (this.unitType == PC && unt == DOZ) {
+            return Piece.of(this.magnitude.divide(SHIFTER, 0, RoundingMode.DOWN), DOZ);
         }
         return this;
+    }
+
+    @Override
+    public Measurable<BigDecimal, Piece , PieceUnit> add(Measurable<BigDecimal, Piece , PieceUnit> other) {
+        if (this.unitType == PC && other.getUnitType() == PC) {
+            return Piece.of(other.getMagnitude().add(this.magnitude));
+        } else if (this.unitType == PC && other.getUnitType() == DOZ) {
+            return Piece.of((DOZ.getMagnitude().multiply(other.getMagnitude())).add(this.magnitude));
+        } else if (this.unitType == DOZ && other.getUnitType() == PC) {
+            return Piece.of((DOZ.getMagnitude().multiply(this.magnitude)).add(other.getMagnitude()), PC);
+        } else if (this.unitType == DOZ && other.getUnitType() == DOZ) {
+            return Piece.of(this.magnitude.add(other.getMagnitude()), DOZ);
+        }
+        throw new IllegalArgumentException("Unsupported PieceUnit type");
+    }
+
+    @Override
+    public Measurable<BigDecimal, Piece, PieceUnit> subtract(Measurable<BigDecimal, Piece, PieceUnit> subtrahent) {
+        if (this.unitType == PC && subtrahent.getUnitType() == PC) {
+            return Piece.of(this.magnitude.subtract(subtrahent.getMagnitude()));
+        } else if (this.unitType == PC && subtrahent.getUnitType() == DOZ) {
+            return Piece.of(this.magnitude.subtract(DOZ.getMagnitude().multiply(subtrahent.getMagnitude())), PC);
+        } else if (this.unitType == DOZ && subtrahent.getUnitType() == PC) {
+            return Piece.of((DOZ.getMagnitude().multiply(this.magnitude)).subtract(subtrahent.getMagnitude()), PC);
+        } else if (this.unitType == DOZ && subtrahent.getUnitType() == DOZ) {
+            return Piece.of(this.magnitude.subtract(subtrahent.getMagnitude()), DOZ);
+        }
+        throw new IllegalArgumentException("Unsupported PieceUnit type");
     }
 
     /**

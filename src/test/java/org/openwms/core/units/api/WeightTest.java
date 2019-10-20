@@ -21,6 +21,9 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.openwms.core.units.api.Weight.ZERO;
+import static org.openwms.core.units.api.WeightUnit.KG;
+import static org.openwms.core.units.api.WeightUnit.T;
 
 /**
  * A WeightTest.
@@ -29,29 +32,52 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class WeightTest {
 
-
-    @Test void testWeight() {
-        Weight w1 = new Weight(new BigDecimal(1), WeightUnit.KG);
-        Weight w2 = new Weight(new BigDecimal(1), WeightUnit.T);
-        w2 = w2.convertTo(WeightUnit.KG);
-        assertEquals(BigDecimal.ONE, w1.getMagnitude());
-        assertEquals(new BigDecimal(0), new BigDecimal("1000").subtract(w2.getMagnitude()));
-        assertEquals(WeightUnit.KG, w2.getUnitType());
-        w1.compareTo(w2);
+    @Test void testConversion() {
+        Weight one_KILO = Weight.of(1, KG);
+        Weight one_TON = Weight.of(1, WeightUnit.T);
+        one_TON = one_TON.convertTo(KG);
+        assertThat(one_KILO.getMagnitude()).isEqualTo(BigDecimal.ONE);
+        assertThat(new BigDecimal("1000").subtract(one_TON.getMagnitude())).isEqualTo(new BigDecimal(0));
+        assertThat(one_TON.getUnitType()).isEqualTo(KG);
+        assertThat(one_KILO.compareTo(one_TON)).isNegative();
+        assertThat(one_KILO.toString()).isEqualTo("1 KG");
     }
 
-    @Test void testWeightComparison() {
-        Weight w1 = new Weight(new BigDecimal(1), WeightUnit.G);
-        Weight w2 = new Weight(new BigDecimal(1), WeightUnit.T);
-        assertThat(w1.compareTo(w2)).isEqualTo(-1);
-        assertThat(w2.compareTo(w1)).isEqualTo(1);
+    @Test void testComparison() {
+        Weight one_GRAM = Weight.of(1, WeightUnit.G);
+        Weight one_TON = Weight.of(1, WeightUnit.T);
+        assertThat(one_GRAM.compareTo(one_TON)).isNegative();
+        assertThat(one_TON.compareTo(one_GRAM)).isPositive();
 
-        Weight w3 = new Weight(new BigDecimal(2), WeightUnit.G);
-        assertThat(w1.compareTo(w3)).isEqualTo(-1);
-        assertThat(w3.compareTo(w1)).isEqualTo(1);
+        Weight two_GRAM = Weight.of(2, WeightUnit.G);
+        assertThat(one_GRAM.compareTo(two_GRAM)).isNegative();
+        assertThat(two_GRAM.compareTo(one_GRAM)).isPositive();
 
-        Weight w4 = new Weight(new BigDecimal("0.000002"), WeightUnit.T);
-        w3 = w3.convertTo(WeightUnit.T);
-        assertThat(w3.compareTo(w4)).isEqualTo(0);
+        Weight w4 = Weight.of(new BigDecimal("0.000002"), WeightUnit.T);
+        two_GRAM = two_GRAM.convertTo(WeightUnit.T);
+        assertThat(two_GRAM.compareTo(w4)).isZero();
+    }
+
+    @Test void testAddition() {
+        Weight one_KILO = Weight.of(1, KG);
+        Weight two_KILO = Weight.of(2, KG);
+        assertThat(one_KILO.add(one_KILO)).isEqualTo(two_KILO);
+
+        Weight one_TON = Weight.of(1, T);
+        assertThat(one_KILO.add(one_TON)).isEqualTo(Weight.of(1001, KG));
+        assertThat(one_TON.add(one_KILO)).isEqualTo(Weight.of(1001, KG));
+        assertEquals(one_TON.add(one_KILO), Weight.of(new BigDecimal("1.001"), T));
+    }
+
+    @Test void testSubtract() {
+        Weight one_KILO = Weight.of(1, KG);
+        Weight two_KILO = Weight.of(2, KG);
+        assertThat(two_KILO.subtract(one_KILO)).isEqualTo(one_KILO);
+        assertThat(two_KILO.subtract(two_KILO)).isEqualTo(ZERO);
+        assertThat(two_KILO.subtract(two_KILO).isZero()).isTrue();
+
+        Weight one_TON = Weight.of(1, T);
+        assertThat(one_TON.subtract(one_KILO)).isEqualTo(Weight.of(999, KG));
+        assertThat(one_KILO.subtract(one_TON).isNegative()).isTrue();
     }
 }

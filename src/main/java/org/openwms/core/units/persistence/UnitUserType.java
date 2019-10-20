@@ -151,7 +151,7 @@ public class UnitUserType implements CompositeUserType {
             return Piece.of(amount, PieceUnit.valueOf(unitType));
         } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {
             BigDecimal amount = rs.getBigDecimal(names[1]);
-            return new Weight(amount, WeightUnit.valueOf(unitType));
+            return Weight.of(amount, WeightUnit.valueOf(unitType));
         }
         throw new TypeMismatchException(format("Incompatible type: [%s]", unitTypeClass));
     }

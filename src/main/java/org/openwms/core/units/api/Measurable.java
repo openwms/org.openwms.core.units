@@ -61,4 +61,8 @@ public interface Measurable<V extends Number, E extends Measurable<V, E, T>, T e
      * @return The converted unit
      */
     E convertTo(T unit);
+
+    Measurable<V, E, T>  add(Measurable<V, E, T> other);
+
+    Measurable<V, E, T>  subtract(Measurable<V, E, T> other);
 }

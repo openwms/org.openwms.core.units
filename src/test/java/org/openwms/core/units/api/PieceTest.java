@@ -20,9 +20,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openwms.core.units.api.PieceUnit.DOZ;
+import static org.openwms.core.units.api.PieceUnit.PC;
 
 /**
  * A PieceTest.
@@ -31,38 +30,51 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class PieceTest {
 
-    @Test void testCompareTo() {
-        assertEquals(1, Piece.of(50, PieceUnit.PC).compareTo(Piece.of(30)));
-        assertEquals(-1, Piece.of(30).compareTo(Piece.of(50, PieceUnit.PC)));
+    @Test void testComparison() {
+        assertThat(Piece.of(50, PC).compareTo(Piece.of(30))).isEqualTo(1);
+        assertThat(Piece.of(30).compareTo(Piece.of(50, PC))).isEqualTo(-1);
         assertThat(Piece.of(30).compareTo(Piece.of(30))).isEqualTo(0);
     }
 
-    @Test void testConvertToPieceUnit() {
+    @Test void testConversion() {
         Piece p30 = Piece.of(30);
-        Piece p50 = Piece.of(50, PieceUnit.PC);
+        Piece p50 = Piece.of(50, PC);
 
-        Piece p502 = p50.convertTo(PieceUnit.DOZ);
-        assertFalse(p502.equals(p50));
+        Piece p502 = p50.convertTo(DOZ);
+        assertThat(p502.equals(p50)).isFalse();
 
-        assertTrue(p502.getMagnitude().equals(new BigDecimal(4)));
-        assertTrue(p502.getUnitType() == PieceUnit.DOZ);
+        assertThat(p502.getMagnitude()).isEqualTo(new BigDecimal(4));
+        assertThat(p502.getUnitType()).isEqualTo(DOZ);
 
-        assertTrue(p502.equals(Piece.of(4, PieceUnit.DOZ)));
-        assertFalse(p502.equals(Piece.of(50, PieceUnit.PC)));
-        assertTrue(p502.equals(Piece.of(48, PieceUnit.PC)));
-        assertTrue(p50.getUnitType() == PieceUnit.PC);
+        assertThat(p502).isEqualTo(Piece.of(4, DOZ));
+        assertThat(p502).isNotEqualTo(Piece.of(50, PC));
+        assertThat(p502).isEqualTo(Piece.of(48, PC));
+        assertThat(p50.getUnitType()).isEqualTo(PC);
 
-        assertEquals(1, p50.compareTo(p30));
-        assertEquals(-1, p30.compareTo(p50));
+        assertThat(p50.compareTo(p30)).isEqualTo(1);
+        assertThat(p30.compareTo(p50)).isEqualTo(-1);
 
-        Piece p5doz = Piece.of(5, PieceUnit.DOZ);
-        assertEquals(1, p5doz.compareTo(p50));
-        assertEquals(1, p5doz.compareTo(p30));
-        assertEquals(-1, p50.compareTo(p5doz));
-        assertEquals(-1, p30.compareTo(p5doz));
+        Piece p5doz = Piece.of(5, DOZ);
+        assertThat(p5doz.compareTo(p50)).isEqualTo(1);
+        assertThat(p5doz.compareTo(p30)).isEqualTo(1);
+        assertThat(p50.compareTo(p5doz)).isEqualTo(-1);
+        assertThat(p30.compareTo(p5doz)).isEqualTo(-1);
 
-        Piece p60 = Piece.of(60, PieceUnit.PC);
-        assertEquals(0, p5doz.compareTo(p60));
-        assertEquals(0, p60.compareTo(p5doz));
+        Piece p60 = Piece.of(60, PC);
+        assertThat(p5doz.compareTo(p60)).isEqualTo(0);
+        assertThat(p60.compareTo(p5doz)).isEqualTo(0);
+    }
+
+    @Test void testAddition() {
+        Piece p30 = Piece.of(30);
+        Piece d2 = Piece.of(2, DOZ);
+        assertThat(p30.add(d2)).isEqualTo(Piece.of(54, PC));
+        assertThat(p30).isEqualTo(Piece.of(30, PC)); //  unmodified
+        assertThat(p30.add(Piece.of(2, PC))).isEqualTo(Piece.of(32, PC));
+        assertThat(p30).isEqualTo(Piece.of(30, PC)); //  unmodified
+        assertThat(d2.add(Piece.of(2, PC))).isEqualTo(Piece.of(26, PC));
+        assertThat(d2).isEqualTo(Piece.of(2, DOZ)); //  unmodified
+        assertThat(d2.add(Piece.of(1, DOZ))).isEqualTo(Piece.of(3, DOZ));
+        assertThat(d2).isEqualTo(Piece.of(2, DOZ)); //  unmodified
     }
 }
