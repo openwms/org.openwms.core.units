@@ -8,7 +8,7 @@
         <relativePath />
     </parent>
     <artifactId>org.openwms.core.units</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
     <name>OpenWMS.org CORE: Units</name>
     <url>https://openwms.github.io/${project.artifactId}/index.html</url>
 
@@ -133,25 +133,30 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.interface21</groupId>
             <artifactId>ameba-lib</artifactId>
+            <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>tech.units</groupId>
             <artifactId>indriya</artifactId>
+            <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
+            <optional>true</optional>
             <scope>provided</scope>
         </dependency>
 
