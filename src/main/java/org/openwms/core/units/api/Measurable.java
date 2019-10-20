@@ -62,7 +62,19 @@ public interface Measurable<V extends Number, E extends Measurable<V, E, T>, T e
      */
     E convertTo(T unit);
 
-    Measurable<V, E, T>  add(Measurable<V, E, T> other);
+    /**
+     * Add an {@code other} Measurable to this one.
+     *
+     * @param other The one to add
+     * @return A new instance
+     */
+    Measurable<V, E, T> add(Measurable<V, E, T> other);
 
-    Measurable<V, E, T>  subtract(Measurable<V, E, T> other);
+    /**
+     * Subtract an {@code other} Measurable instance from this one.
+     *
+     * @param other The one to subtract
+     * @return A new instance
+     */
+    Measurable<V, E, T> subtract(Measurable<V, E, T> other);
 }
