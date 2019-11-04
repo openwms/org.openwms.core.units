@@ -15,6 +15,8 @@
  */
 package org.openwms.core.units.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -115,6 +117,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public boolean isZero() {
         return Piece.ZERO.equals(new Piece(this.getMagnitude(), DOZ));
@@ -123,14 +126,16 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public boolean isNegative() {
-        return this.getMagnitude().signum() == -1;
+        return this.getMagnitude() == null || this.getMagnitude().signum() == -1;
     }
 
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public Piece convertTo(PieceUnit unt) {
         if (this.unitType == DOZ && unt == PC) {
@@ -141,8 +146,15 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @JsonIgnore
     @Override
     public Measurable<BigDecimal, Piece , PieceUnit> add(Measurable<BigDecimal, Piece , PieceUnit> other) {
+        if (other == null) {
+            return Piece.of(this.magnitude, this.unitType);
+        }
         if (this.unitType == PC && other.getUnitType() == PC) {
             return Piece.of(other.getMagnitude().add(this.magnitude));
         } else if (this.unitType == PC && other.getUnitType() == DOZ) {
@@ -155,8 +167,15 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
         throw new IllegalArgumentException("Unsupported PieceUnit type");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @JsonIgnore
     @Override
     public Measurable<BigDecimal, Piece, PieceUnit> subtract(Measurable<BigDecimal, Piece, PieceUnit> subtrahent) {
+        if (subtrahent == null) {
+            return Piece.of(this.magnitude, this.unitType);
+        }
         if (this.unitType == PC && subtrahent.getUnitType() == PC) {
             return Piece.of(this.magnitude.subtract(subtrahent.getMagnitude()));
         } else if (this.unitType == PC && subtrahent.getUnitType() == DOZ) {
@@ -172,6 +191,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public int compareTo(Piece o) {
         if (null == o) {

@@ -15,6 +15,8 @@
  */
 package org.openwms.core.units.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -114,29 +116,39 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public boolean isZero() {
-        return this.getMagnitude().equals(BigDecimal.ZERO);
+        return Weight.ZERO.equals(Weight.of(this.magnitude));
     }
 
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public boolean isNegative() {
-        return this.getMagnitude().signum() == -1;
+        return this.getMagnitude() == null || this.getMagnitude().signum() == -1;
     }
 
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public Weight convertTo(WeightUnit unt) {
         return new Weight(getMagnitude().scaleByPowerOfTen((this.getUnitType().ordinal() - unt.ordinal()) * 3), unt);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @JsonIgnore
     @Override
     public Measurable<BigDecimal, Weight, WeightUnit> add(Measurable<BigDecimal, Weight, WeightUnit> other) {
+        if (other == null) {
+            return Weight.of(this.magnitude, this.unitType);
+        }
         if (this.unitType.ordinal() > other.getUnitType().ordinal()) {
             int factor = this.unitType.ordinal() - other.getUnitType().ordinal();
             return Weight.of(this.magnitude.scaleByPowerOfTen(factor * 3).add(other.getMagnitude()), other.getUnitType());
@@ -147,21 +159,29 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
         return Weight.of(other.getMagnitude().add(this.magnitude), this.unitType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @JsonIgnore
     @Override
-    public Measurable<BigDecimal, Weight, WeightUnit> subtract(Measurable<BigDecimal, Weight, WeightUnit> other) {
-        if (this.unitType.ordinal() > other.getUnitType().ordinal()) {
-            int factor = this.unitType.ordinal() - other.getUnitType().ordinal();
-            return Weight.of(this.magnitude.scaleByPowerOfTen(factor * 3).subtract(other.getMagnitude()), other.getUnitType());
-        } else if (this.unitType.ordinal() < other.getUnitType().ordinal()) {
-            int factor = other.getUnitType().ordinal() - this.unitType.ordinal();
-            return Weight.of(this.magnitude.subtract(other.getMagnitude().scaleByPowerOfTen(factor * 3)), this.unitType);
+    public Measurable<BigDecimal, Weight, WeightUnit> subtract(Measurable<BigDecimal, Weight, WeightUnit> subtrahent) {
+        if (subtrahent == null) {
+            return Weight.of(this.magnitude, this.unitType);
         }
-        return Weight.of(this.magnitude.subtract(other.getMagnitude()), this.unitType);
+        if (this.unitType.ordinal() > subtrahent.getUnitType().ordinal()) {
+            int factor = this.unitType.ordinal() - subtrahent.getUnitType().ordinal();
+            return Weight.of(this.magnitude.scaleByPowerOfTen(factor * 3).subtract(subtrahent.getMagnitude()), subtrahent.getUnitType());
+        } else if (this.unitType.ordinal() < subtrahent.getUnitType().ordinal()) {
+            int factor = subtrahent.getUnitType().ordinal() - this.unitType.ordinal();
+            return Weight.of(this.magnitude.subtract(subtrahent.getMagnitude().scaleByPowerOfTen(factor * 3)), this.unitType);
+        }
+        return Weight.of(this.magnitude.subtract(subtrahent.getMagnitude()), this.unitType);
     }
 
     /**
      * {@inheritDoc}
      */
+    @JsonIgnore
     @Override
     public int compareTo(Weight o) {
         if (o.getUnitType().ordinal() > this.getUnitType().ordinal()) {
