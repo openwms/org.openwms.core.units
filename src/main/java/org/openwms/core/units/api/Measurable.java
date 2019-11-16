@@ -17,13 +17,15 @@ package org.openwms.core.units.api;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.io.Serializable;
+
 /**
  * A Measurable.
  *
  * @author Heiko Scherrer
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
-public interface Measurable<V extends Number, E extends Measurable<V, E, T>, T extends BaseUnit<T>> extends Comparable<E> {
+public interface Measurable<V extends Number, E extends Measurable<V, E, T>, T extends BaseUnit<T>> extends Comparable<E>, Serializable {
 
     /**
      * Returns the type of {@code Measurable}.

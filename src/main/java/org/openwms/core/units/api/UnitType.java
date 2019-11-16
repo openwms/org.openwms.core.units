@@ -15,12 +15,14 @@
  */
 package org.openwms.core.units.api;
 
+import java.io.Serializable;
+
 /**
  * An UnitType is a super type of all concrete units.
  *
  * @author Heiko Scherrer
  */
-public interface UnitType {
+public interface UnitType extends Serializable {
 
     /**
      * Return the concrete type of {@code Measurable}.
