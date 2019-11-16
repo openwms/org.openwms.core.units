@@ -25,7 +25,6 @@ import java.util.List;
  *
  * @param <T> Concrete type of BaseUnit
  * @author Heiko Scherrer
- * @GlossaryTerm
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public interface BaseUnit<T extends BaseUnit<T>> {

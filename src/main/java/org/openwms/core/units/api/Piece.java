@@ -64,6 +64,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
      * 
      * @param magnitude The magnitude of the Piece
      * @param unitType The unit of measure
+     * @return The new instance
      */
     public static Piece of(int magnitude, PieceUnit unitType) {
         return new Piece(new BigDecimal(magnitude), unitType);
@@ -73,6 +74,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
      * Create a new Piece.
      * 
      * @param magnitude The magnitude of the Piece as int
+     * @return The new instance
      */
     public static Piece of(int magnitude) {
         return new Piece(new BigDecimal(magnitude), PC.getBaseUnit());
@@ -83,6 +85,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
      * 
      * @param magnitude The magnitude of the Piece
      * @param unitType The unit of measure
+     * @return The new instance
      */
     public static Piece of(BigDecimal magnitude, PieceUnit unitType) {
         return new Piece(magnitude, unitType);
@@ -92,6 +95,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
      * Create a new Piece.
      * 
      * @param magnitude The magnitude of the Piece as BigDecimal
+     * @return The new instance
      */
     public static Piece of(BigDecimal magnitude) {
         return new Piece(magnitude, PC.getBaseUnit());

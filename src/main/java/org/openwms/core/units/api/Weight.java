@@ -60,6 +60,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      *
      * @param magnitude The magnitude of the Weight
      * @param unitType The unit of measure
+     * @return The new instance
      */
     public static Weight of(int magnitude, WeightUnit unitType) {
         return new Weight(new BigDecimal(magnitude), unitType);
@@ -69,6 +70,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      * Create a new Weight.
      *
      * @param magnitude The magnitude of the Weight as int
+     * @return The new instance
      */
     public static Weight of(int magnitude) {
         return new Weight(new BigDecimal(magnitude), KG.getBaseUnit());
@@ -79,6 +81,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      *
      * @param magnitude The magnitude of the Weight
      * @param unitType The unit of measure
+     * @return The new instance
      */
     public static Weight of(BigDecimal magnitude, WeightUnit unitType) {
         return new Weight(magnitude, unitType);
@@ -88,6 +91,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      * Create a new Weight.
      *
      * @param magnitude The magnitude of the Weight as BigDecimal
+     * @return The new instance
      */
     public static Weight of(BigDecimal magnitude) {
         return new Weight(magnitude, KG.getBaseUnit());
