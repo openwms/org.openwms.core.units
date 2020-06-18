@@ -62,7 +62,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      * @param unitType The unit of measure
      * @return The new instance
      */
-    public static Weight of(int magnitude, WeightUnit unitType) {
+    public static Weight of(Integer magnitude, WeightUnit unitType) {
         return new Weight(new BigDecimal(magnitude), unitType);
     }
 
