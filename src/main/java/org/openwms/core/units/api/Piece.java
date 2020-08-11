@@ -171,6 +171,11 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
         throw new IllegalArgumentException("Unsupported PieceUnit type");
     }
 
+    @Override
+    public String asString() {
+        return magnitude + SEPARATOR + unitType;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -207,16 +212,6 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
             return compare(this.getMagnitude().multiply(SHIFTER), o.getMagnitude());
         }
         return this.getMagnitude().compareTo(o.getMagnitude());
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * Return a combination of amount and unit, e.g. 24 PC
-     */
-    @Override
-    public String toString() {
-        return getMagnitude() + " " + getUnitType();
     }
 
     /**

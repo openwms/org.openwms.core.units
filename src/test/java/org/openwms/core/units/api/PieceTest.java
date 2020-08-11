@@ -36,6 +36,11 @@ class PieceTest {
         assertThat(Piece.of(30).compareTo(Piece.of(30))).isEqualTo(0);
     }
 
+    @Test void test_for_ZERO() {
+        assertThat(Piece.ZERO.getMagnitude()).isEqualTo(BigDecimal.ZERO);
+        assertThat(Piece.ZERO.getUnitType()).isEqualTo(PC);
+    }
+
     @Test void testConversion() {
         Piece p30 = Piece.of(30);
         Piece p50 = Piece.of(50, PC);
