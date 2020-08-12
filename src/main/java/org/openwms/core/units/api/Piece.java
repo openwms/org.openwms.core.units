@@ -171,9 +171,12 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
         throw new IllegalArgumentException("Unsupported PieceUnit type");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String asString() {
-        return magnitude + SEPARATOR + unitType;
+    public String toString() {
+        return asString();
     }
 
     /**

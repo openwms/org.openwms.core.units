@@ -238,6 +238,6 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      */
     @Override
     public String toString() {
-        return getMagnitude() + " " + getUnitType();
+        return asString();
     }
 }
