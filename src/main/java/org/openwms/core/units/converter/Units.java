@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openwms.core.units.api;
+package org.openwms.core.units.converter;
+
+import org.openwms.core.units.api.BaseUnit;
+import org.openwms.core.units.api.Measurable;
+import org.openwms.core.units.api.MeasurableString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,5 +42,16 @@ public final class Units {
 
     public static Optional<BaseUnit<?>> getUnit(String name) {
         return Units.getAllUnits().stream().filter(f->f.name().equalsIgnoreCase(name)).findFirst();
+    }
+
+    public static Optional<Measurable> getMeasurable(String name) {
+        MeasurableStringConverter conv = new MeasurableStringConverter();
+        Measurable value = null;
+        try {
+            value = conv.convertFrom(new MeasurableString(name));
+        } catch (Exception e) {
+            // be fine here and omit MappingExceptions
+        }
+        return Optional.ofNullable(value);
     }
 }

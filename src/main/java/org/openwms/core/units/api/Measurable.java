@@ -27,7 +27,7 @@ import java.io.Serializable;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public interface Measurable<V extends Number, E extends Measurable<V, E, T>, T extends BaseUnit<T>> extends Comparable<E>, Serializable {
 
-    public static final String SEPARATOR = " ";
+    String SEPARATOR = " ";
 
     /**
      * Returns the type of {@code Measurable}.
@@ -65,12 +65,6 @@ public interface Measurable<V extends Number, E extends Measurable<V, E, T>, T e
      * @return The converted unit
      */
     E convertTo(T unit);
-
-    /**
-     * Return the representation as a String.
-     *
-     * @return As a String
-     */
 
     /**
      * {@inheritDoc}
