@@ -45,6 +45,8 @@ public class MeasurableString {
         this.unit = String.valueOf(parts[1]);
     }
 
+    MeasurableString() {}
+
     public MeasurableString(Measurable str) {
         if (str == null) {
             throw new IllegalArgumentException("MeasurableString is null");
