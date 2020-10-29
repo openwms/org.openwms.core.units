@@ -20,79 +20,79 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import static org.openwms.core.units.api.WeightUnit.KG;
+import static org.openwms.core.units.api.MetricDimensionUnit.M;
 
 /**
- * A Weight represents a real world weight, that comes with an <code>Unit</code> and a value.
+ * A MetricDimension represents metric dimensional units, like meters.
  * 
  * @author Heiko Scherrer
  */
-public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Serializable {
+public class MetricDimension implements Measurable<BigDecimal, MetricDimension, MetricDimensionUnit>, Serializable {
 
-    /** The unit of the Weight. */
-    private WeightUnit unitType;
-    /** The magnitude of the Weight. */
+    /** The unit of the MetricDimension. */
+    private MetricDimensionUnit unitType;
+    /** The magnitude of the MetricDimensionUnit. */
     private BigDecimal magnitude;
     /** Constant for a zero value. */
-    public static final Weight ZERO = Weight.of(0);
+    public static final MetricDimension ZERO = MetricDimension.of(0);
 
-    /* ----------------------------- methods ------------------- */
+    /* ----------------------------- constructors ------------------- */
     /** Accessed by persistence provider. */
-    protected Weight() {
+    protected MetricDimension() {
         super();
     }
 
     /**
-     * Create a new Weight.
-     * 
+     * Create a new MetricDimension.
+     *
      * @param magnitude The magnitude
      * @param unitType The unit of measure
      */
-    private Weight(BigDecimal magnitude, WeightUnit unitType) {
+    private MetricDimension(BigDecimal magnitude, MetricDimensionUnit unitType) {
         this.magnitude = magnitude;
         this.unitType = unitType;
     }
 
     /**
-     * Create a new Weight.
-     *
+     * Create a new MetricDimension.
+     * 
      * @param magnitude The magnitude
      * @param unitType The unit of measure
      * @return The new instance
      */
-    public static Weight of(Integer magnitude, WeightUnit unitType) {
-        return new Weight(new BigDecimal(magnitude), unitType);
+    public static MetricDimension of(int magnitude, MetricDimensionUnit unitType) {
+        return new MetricDimension(new BigDecimal(magnitude), unitType);
     }
 
     /**
-     * Create a new Weight.
-     *
+     * Create a new MetricDimension.
+     * 
      * @param magnitude The magnitude
      * @return The new instance
      */
-    public static Weight of(int magnitude) {
-        return new Weight(new BigDecimal(magnitude), KG.getBaseUnit());
+    public static MetricDimension of(int magnitude) {
+        return new MetricDimension(new BigDecimal(magnitude), M.getBaseUnit());
     }
 
     /**
-     * Create a new Weight.
-     *
+     * Create a new MetricDimension.
+     * 
      * @param magnitude The magnitude
      * @param unitType The unit of measure
      * @return The new instance
      */
-    public static Weight of(BigDecimal magnitude, WeightUnit unitType) {
-        return new Weight(magnitude, unitType);
+    public static MetricDimension of(BigDecimal magnitude, MetricDimensionUnit unitType) {
+        return new MetricDimension(magnitude, unitType);
     }
 
     /**
-     * Create a new Weight.
-     *
+     * Create a new MetricDimension.
+     * 
      * @param magnitude The magnitude
      * @return The new instance
      */
-    public static Weight of(BigDecimal magnitude) {
-        return new Weight(magnitude, KG.getBaseUnit());
+    public static MetricDimension of(BigDecimal magnitude) {
+        return new MetricDimension(magnitude, M.getBaseUnit());
     }
 
     /* ----------------------------- methods ------------------- */
@@ -108,7 +108,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      * {@inheritDoc}
      */
     @Override
-    public WeightUnit getUnitType() {
+    public MetricDimensionUnit getUnitType() {
         return unitType;
     }
 
@@ -118,7 +118,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
     @JsonIgnore
     @Override
     public boolean isZero() {
-        return Weight.ZERO.equals(Weight.of(this.magnitude));
+        return MetricDimension.ZERO.equals(new MetricDimension(this.getMagnitude(), M));
     }
 
     /**
@@ -135,8 +135,8 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      */
     @JsonIgnore
     @Override
-    public Weight convertTo(WeightUnit unt) {
-        return new Weight(getMagnitude().scaleByPowerOfTen((this.getUnitType().ordinal() - unt.ordinal()) * 3), unt);
+    public MetricDimension convertTo(MetricDimensionUnit unt) {
+        return new MetricDimension(getMagnitude().scaleByPowerOfTen((this.getUnitType().ordinal() - unt.ordinal()) * 3), unt);
     }
 
     /**
@@ -144,18 +144,18 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      */
     @JsonIgnore
     @Override
-    public Measurable<BigDecimal, Weight, WeightUnit> add(Measurable<BigDecimal, Weight, WeightUnit> other) {
-        if (other == null) {
-            return Weight.of(this.magnitude, this.unitType);
+    public Measurable<BigDecimal, MetricDimension, MetricDimensionUnit> add(Measurable<BigDecimal, MetricDimension, MetricDimensionUnit> other) {
+        if (other == null || other == ZERO) {
+            return MetricDimension.of(this.magnitude, this.unitType);
         }
         if (this.unitType.ordinal() > other.getUnitType().ordinal()) {
             int factor = this.unitType.ordinal() - other.getUnitType().ordinal();
-            return Weight.of(this.magnitude.scaleByPowerOfTen(factor * 3).add(other.getMagnitude()), other.getUnitType());
+            return MetricDimension.of(this.magnitude.scaleByPowerOfTen(factor * 3).add(other.getMagnitude()), other.getUnitType());
         } else if (this.unitType.ordinal() < other.getUnitType().ordinal()) {
             int factor = other.getUnitType().ordinal() - this.unitType.ordinal();
-            return Weight.of(other.getMagnitude().scaleByPowerOfTen(factor * 3).add(this.magnitude), this.unitType);
+            return MetricDimension.of(other.getMagnitude().scaleByPowerOfTen(factor * 3).add(this.magnitude), this.unitType);
         }
-        return Weight.of(other.getMagnitude().add(this.magnitude), this.unitType);
+        return MetricDimension.of(other.getMagnitude().add(this.magnitude), this.unitType);
     }
 
     /**
@@ -163,18 +163,18 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      */
     @JsonIgnore
     @Override
-    public Measurable<BigDecimal, Weight, WeightUnit> subtract(Measurable<BigDecimal, Weight, WeightUnit> subtrahent) {
+    public Measurable<BigDecimal, MetricDimension, MetricDimensionUnit> subtract(Measurable<BigDecimal, MetricDimension, MetricDimensionUnit> subtrahent) {
         if (subtrahent == null || subtrahent == ZERO) {
-            return Weight.of(this.magnitude, this.unitType);
+            return MetricDimension.of(this.magnitude, this.unitType);
         }
         if (this.unitType.ordinal() > subtrahent.getUnitType().ordinal()) {
             int factor = this.unitType.ordinal() - subtrahent.getUnitType().ordinal();
-            return Weight.of(this.magnitude.scaleByPowerOfTen(factor * 3).subtract(subtrahent.getMagnitude()), subtrahent.getUnitType());
+            return MetricDimension.of(this.magnitude.scaleByPowerOfTen(factor * 3).subtract(subtrahent.getMagnitude()), subtrahent.getUnitType());
         } else if (this.unitType.ordinal() < subtrahent.getUnitType().ordinal()) {
             int factor = subtrahent.getUnitType().ordinal() - this.unitType.ordinal();
-            return Weight.of(this.magnitude.subtract(subtrahent.getMagnitude().scaleByPowerOfTen(factor * 3)), this.unitType);
+            return MetricDimension.of(this.magnitude.subtract(subtrahent.getMagnitude().scaleByPowerOfTen(factor * 3)), this.unitType);
         }
-        return Weight.of(this.magnitude.subtract(subtrahent.getMagnitude()), this.unitType);
+        return MetricDimension.of(this.magnitude.subtract(subtrahent.getMagnitude()), this.unitType);
     }
 
     /**
@@ -182,7 +182,7 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
      */
     @JsonIgnore
     @Override
-    public int compareTo(Weight o) {
+    public int compareTo(MetricDimension o) {
         if (o.getUnitType().ordinal() > this.getUnitType().ordinal()) {
             int factor = o.getUnitType().ordinal() - this.getUnitType().ordinal();
             return this.magnitude.compareTo(o.magnitude.scaleByPowerOfTen(factor * 3));
@@ -203,8 +203,8 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getMagnitude() == null) ? 0 : getMagnitude().hashCode());
-        result = prime * result + ((getUnitType() == null) ? 0 : getUnitType().hashCode());
+        result = prime * result + ((magnitude == null) ? 0 : magnitude.hashCode());
+        result = prime * result + ((unitType == null) ? 0 : unitType.hashCode());
         return result;
     }
 
@@ -224,7 +224,10 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Weight other = (Weight) obj;
+        MetricDimension other = (MetricDimension) obj;
+        if (magnitude == null && other.magnitude != null) {
+            return false;
+        }
         return this.compareTo(other) == 0;
     }
 

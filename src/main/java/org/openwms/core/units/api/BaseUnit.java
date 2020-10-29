@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2019 the original author or authors.
+ * Copyright 2005-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,18 +30,23 @@ import java.util.List;
 public interface BaseUnit<T extends BaseUnit<T>> {
 
     /**
-     * Return all sub types of the {@code UnitType}.
+     * Return all sub types of the {@code BaseUnit}.
      *
      * @return a list of sub types
      */
     List<T> getAll();
 
     /**
-     * Return the base unit type of the {@code UnitType}.
+     * Return the base unit type of the {@code BaseUnit}.
      *
      * @return The base unit type
      */
     T getBaseUnit();
 
+    /**
+     * A descriptive short name of the {@code BaseUnit}.
+     *
+     * @return As String
+     */
     String name();
 }

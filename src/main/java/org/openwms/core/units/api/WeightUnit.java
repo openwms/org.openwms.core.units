@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2019 the original author or authors.
+ * Copyright 2005-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.openwms.core.units.api;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,42 +29,33 @@ import java.util.List;
  */
 public enum WeightUnit implements BaseUnit<WeightUnit> {
 
-    /**
-     * Milligram.
-     */
-    MG(1000000000),
-    /**
-     * Gram.
-     */
-    G(1000000),
-    /**
-     * Kilogram.
-     */
-    KG(1000),
-    /**
-     * Tons.
-     */
-    T(1);
+    /** Milligram. */
+    MG(new BigDecimal(.001)),
+    /** Gram. */
+    G(new BigDecimal(1)),
+    /** Kilogram. */
+    KG(new BigDecimal(1000)),
+    /** Tons. */
+    T(new BigDecimal(1_000_000));
 
-    private Long magnitude;
+    private BigDecimal magnitude;
     private static WeightUnit[] all = { WeightUnit.MG, WeightUnit.G, WeightUnit.KG, WeightUnit.T };
 
     /**
-     * Create a new <code>WeightUnit</code>.
+     * Create a new {@code WeightUnit}.
      * 
-     * @param magnitude
-     *            The base unit of the weight
+     * @param magnitude The base unit of the WeightUnit
      */
-    WeightUnit(long magnitude) {
+    WeightUnit(BigDecimal magnitude) {
         this.magnitude = magnitude;
     }
 
     /**
-     * Get the magnitude of this <code>PieceUnit</code>.
+     * Get the magnitude of this {@code WeightUnit}.
      * 
      * @return the magnitude
      */
-    public Long getMagnitude() {
+    public BigDecimal getMagnitude() {
         return this.magnitude;
     }
 

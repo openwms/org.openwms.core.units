@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2019 the original author or authors.
+ * Copyright 2005-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     public static final Piece ZERO = Piece.of(0);
 
     /* ----------------------------- constructors ------------------- */
-    /**
-     * Accessed by persistence provider.
-     */
+    /** Accessed by persistence provider. */
     protected Piece() {
         super();
     }
@@ -51,7 +49,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      *
-     * @param magnitude The magnitude of the Piece
+     * @param magnitude The magnitude
      * @param unitType The unit of measure
      */
     private Piece(BigDecimal magnitude, PieceUnit unitType) {
@@ -62,7 +60,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      * 
-     * @param magnitude The magnitude of the Piece
+     * @param magnitude The magnitude
      * @param unitType The unit of measure
      * @return The new instance
      */
@@ -73,7 +71,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      * 
-     * @param magnitude The magnitude of the Piece as int
+     * @param magnitude The magnitude
      * @return The new instance
      */
     public static Piece of(int magnitude) {
@@ -83,7 +81,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      * 
-     * @param magnitude The magnitude of the Piece
+     * @param magnitude The magnitude
      * @param unitType The unit of measure
      * @return The new instance
      */
@@ -94,7 +92,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     /**
      * Create a new Piece.
      * 
-     * @param magnitude The magnitude of the Piece as BigDecimal
+     * @param magnitude The magnitude
      * @return The new instance
      */
     public static Piece of(BigDecimal magnitude) {

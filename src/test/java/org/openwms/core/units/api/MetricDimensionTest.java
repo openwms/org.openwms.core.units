@@ -21,26 +21,28 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.openwms.core.units.api.MetricDimensionUnit.CM;
+import static org.openwms.core.units.api.MetricDimensionUnit.M;
 import static org.openwms.core.units.api.Weight.ZERO;
 import static org.openwms.core.units.api.WeightUnit.KG;
 import static org.openwms.core.units.api.WeightUnit.T;
 
 /**
- * A WeightTest.
+ * A MetricDimensionTest.
  * 
  * @author Heiko Scherrer
  */
-class WeightTest {
+class MetricDimensionTest {
 
     @Test void testConversion() {
-        Weight one_KILO = Weight.of(1, KG);
-        Weight one_TON = Weight.of(1, WeightUnit.T);
-        one_TON = one_TON.convertTo(KG);
-        assertThat(one_KILO.getMagnitude()).isEqualTo(BigDecimal.ONE);
-        assertThat(new BigDecimal("1000").subtract(one_TON.getMagnitude())).isEqualTo(new BigDecimal(0));
-        assertThat(one_TON.getUnitType()).isEqualTo(KG);
-        assertThat(one_KILO.compareTo(one_TON)).isNegative();
-        assertThat(one_KILO.toString()).isEqualTo("1 KG");
+        MetricDimension one_CM = MetricDimension.of(1, CM);
+        MetricDimension one_M = MetricDimension.of(1, M);
+        one_M = one_M.convertTo(CM);
+        assertThat(one_CM.getMagnitude()).isEqualTo(new BigDecimal(1));
+        assertThat(new BigDecimal("100").subtract(one_M.getMagnitude())).isEqualTo(new BigDecimal(0));
+        assertThat(one_M.getUnitType()).isEqualTo(M);
+        assertThat(one_CM.compareTo(one_M)).isNegative();
+        assertThat(one_CM.toString()).isEqualTo("1 CM");
     }
 
     @Test void testComparison() {

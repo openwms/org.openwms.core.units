@@ -20,34 +20,41 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A PieceUnit.
- * 
+ * A MetricDimensionUnit.
+ *
  * @author Heiko Scherrer
  */
-public enum PieceUnit implements BaseUnit<PieceUnit> {
+public enum MetricDimensionUnit implements BaseUnit<MetricDimensionUnit>  {
 
-    /** A Piece. */
-    PC(new BigDecimal(1)),
+    /** Millimeters. */
+    MM(new BigDecimal(.001)),
 
-    /** A Dozen. */
-    DOZ(new BigDecimal(12));
+    /** Centimeters. */
+    CM(new BigDecimal(.01)),
+
+    /** Decimeters. */
+    DM(new BigDecimal(.1)),
+
+    /** Meters. */
+    M(new BigDecimal(1))
+    ;
 
     private BigDecimal magnitude;
-    private static PieceUnit[] all = { PieceUnit.PC, PieceUnit.DOZ };
+    private static MetricDimensionUnit[] all = { MetricDimensionUnit.MM, MetricDimensionUnit.CM, MetricDimensionUnit.DM, MetricDimensionUnit.M };
 
     /**
-     * Create a new {@code PieceUnit}.
-     * 
-     * @param magnitude The base unit of the PieceUnit
+     * Create a new {@code MetricDimensionUnit}.
+     *
+     * @param magnitude The base unit of the MetricDimension
      */
-    PieceUnit(BigDecimal magnitude) {
+    MetricDimensionUnit(BigDecimal magnitude) {
         this.magnitude = magnitude;
     }
 
     /**
-     * Get the magnitude of this {@code PieceUnit}.
+     * Get the magnitude of this {@code MetricDimensionUnit}.
      *
-     * @return the magnitude
+     * @return the magnitude of the MetricDimension
      */
     public BigDecimal getMagnitude() {
         return this.magnitude;
@@ -57,7 +64,7 @@ public enum PieceUnit implements BaseUnit<PieceUnit> {
      * {@inheritDoc}
      */
     @Override
-    public List<PieceUnit> getAll() {
+    public List<MetricDimensionUnit> getAll() {
         return Arrays.asList(all);
     }
 
@@ -65,7 +72,7 @@ public enum PieceUnit implements BaseUnit<PieceUnit> {
      * {@inheritDoc}
      */
     @Override
-    public PieceUnit getBaseUnit() {
-        return PC;
+    public MetricDimensionUnit getBaseUnit() {
+        return M;
     }
 }
