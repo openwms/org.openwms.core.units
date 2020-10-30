@@ -40,7 +40,7 @@ class MetricDimensionTest {
         one_M = one_M.convertTo(CM);
         assertThat(one_CM.getMagnitude()).isEqualTo(new BigDecimal(1));
         assertThat(new BigDecimal("100").subtract(one_M.getMagnitude())).isEqualTo(new BigDecimal(0));
-        assertThat(one_M.getUnitType()).isEqualTo(M);
+        assertThat(one_M.getUnitType()).isEqualTo(CM);
         assertThat(one_CM.compareTo(one_M)).isNegative();
         assertThat(one_CM.toString()).isEqualTo("1 CM");
     }

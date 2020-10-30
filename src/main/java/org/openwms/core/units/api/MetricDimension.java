@@ -136,7 +136,7 @@ public class MetricDimension implements Measurable<BigDecimal, MetricDimension, 
     @JsonIgnore
     @Override
     public MetricDimension convertTo(MetricDimensionUnit unt) {
-        return new MetricDimension(getMagnitude().scaleByPowerOfTen((this.getUnitType().ordinal() - unt.ordinal()) * 3), unt);
+        return new MetricDimension(getMagnitude().scaleByPowerOfTen((this.getUnitType().ordinal() - unt.ordinal()) * 1), unt);
     }
 
     /**
