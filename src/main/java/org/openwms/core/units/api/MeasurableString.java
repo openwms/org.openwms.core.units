@@ -19,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.io.Serializable;
+
 import static java.lang.String.format;
 
 /**
@@ -26,7 +28,7 @@ import static java.lang.String.format;
  *
  * @author Heiko Scherrer
  */
-public class MeasurableString {
+public class MeasurableString implements Serializable {
 
     public static final String SEPARATOR = " ";
     private String amount;
