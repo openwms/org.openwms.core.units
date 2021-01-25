@@ -59,14 +59,13 @@ public class MeasurableStringConverter extends DozerConverter<Measurable, Measur
         if (source == null) {
             return null;
         }
-        MeasurableString ms = (source);
-        Optional<PieceUnit> pieceUnit = Arrays.stream(PieceUnit.values()).filter(v -> v.name().equals(ms.getUnit())).findFirst();
+        Optional<PieceUnit> pieceUnit = Arrays.stream(PieceUnit.values()).filter(v -> v.name().equals(source.getUnit())).findFirst();
         if (pieceUnit.isPresent()) {
-            return Piece.of(Integer.parseInt(ms.getAmount()), pieceUnit.get());
+            return Piece.of(Integer.parseInt(source.getAmount()), pieceUnit.get());
         }
-        Optional<WeightUnit> weightUnit = Arrays.stream(WeightUnit.values()).filter(v -> v.name().equals(ms.getUnit())).findFirst();
+        Optional<WeightUnit> weightUnit = Arrays.stream(WeightUnit.values()).filter(v -> v.name().equals(source.getUnit())).findFirst();
         if (weightUnit.isPresent()) {
-            return Weight.of(Integer.parseInt(ms.getAmount()), weightUnit.get());
+            return Weight.of(Integer.parseInt(source.getAmount()), weightUnit.get());
         }
         throw new MappingException(format("Type not supported [%s]", source));
     }
