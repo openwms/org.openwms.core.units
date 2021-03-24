@@ -15,8 +15,8 @@
  */
 package org.openwms.core.units.converter;
 
-import org.dozer.DozerConverter;
-import org.dozer.MappingException;
+import com.github.dozermapper.core.DozerConverter;
+import com.github.dozermapper.core.MappingException;
 import org.openwms.core.units.api.BaseUnit;
 import org.openwms.core.units.api.PieceUnit;
 import org.openwms.core.units.api.WeightUnit;

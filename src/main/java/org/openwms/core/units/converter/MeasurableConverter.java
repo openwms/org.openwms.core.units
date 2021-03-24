@@ -15,7 +15,7 @@
  */
 package org.openwms.core.units.converter;
 
-import org.dozer.DozerConverter;
+import com.github.dozermapper.core.DozerConverter;
 import org.openwms.core.units.api.Measurable;
 
 /**
