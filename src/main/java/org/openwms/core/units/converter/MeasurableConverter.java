@@ -35,9 +35,6 @@ public class MeasurableConverter extends DozerConverter<Measurable, Measurable> 
      */
     @Override
     public Measurable convertTo(Measurable source, Measurable destination) {
-        if (source == null) {
-            return null;
-        }
         return source;
     }
 
@@ -46,9 +43,6 @@ public class MeasurableConverter extends DozerConverter<Measurable, Measurable> 
      */
     @Override
     public Measurable convertFrom(Measurable source, Measurable destination) {
-        if (source == null) {
-            return null;
-        }
         return source;
     }
 }
