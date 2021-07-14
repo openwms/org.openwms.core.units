@@ -46,6 +46,7 @@ class WeightTest {
     @Test void testComparison() {
         Weight one_GRAM = Weight.of(1, WeightUnit.G);
         Weight one_TON = Weight.of(1, WeightUnit.T);
+        assertThat(one_GRAM.compareTo(null)).isEqualTo(1);
         assertThat(one_GRAM.compareTo(one_TON)).isNegative();
         assertThat(one_TON.compareTo(one_GRAM)).isPositive();
 

@@ -31,6 +31,7 @@ import static org.openwms.core.units.api.PieceUnit.PC;
 class PieceTest {
 
     @Test void testComparison() {
+        assertThat(Piece.of(50, PC).compareTo(null)).isEqualTo(1);
         assertThat(Piece.of(50, PC).compareTo(Piece.of(30))).isEqualTo(1);
         assertThat(Piece.of(30).compareTo(Piece.of(50, PC))).isEqualTo(-1);
         assertThat(Piece.of(30).compareTo(Piece.of(30))).isEqualTo(0);

@@ -205,7 +205,7 @@ public class Piece implements Measurable<BigDecimal, Piece, PieceUnit>, Serializ
     @Override
     public int compareTo(Piece o) {
         if (null == o) {
-            return -1;
+            return 1;
         }
         if (o.getUnitType().ordinal() > this.getUnitType().ordinal()) {
             return compare(this.getMagnitude(), o.getMagnitude().multiply(SHIFTER));

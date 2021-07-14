@@ -183,6 +183,9 @@ public class Weight implements Measurable<BigDecimal, Weight, WeightUnit>, Seria
     @JsonIgnore
     @Override
     public int compareTo(Weight o) {
+        if (null == o) {
+            return 1;
+        }
         if (o.getUnitType().ordinal() > this.getUnitType().ordinal()) {
             int factor = o.getUnitType().ordinal() - this.getUnitType().ordinal();
             return this.magnitude.compareTo(o.magnitude.scaleByPowerOfTen(factor * 3));
