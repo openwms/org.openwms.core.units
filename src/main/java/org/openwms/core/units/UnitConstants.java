@@ -24,6 +24,8 @@ public final class UnitConstants {
 
     /** Length of a Quantity field: {@value} */
     public static final int QUANTITY_LENGTH = 16;
+    /** Length of a Weight field: {@value} */
+    public static final int WEIGHT_LENGTH = 16;
 
     private UnitConstants() {
     }
