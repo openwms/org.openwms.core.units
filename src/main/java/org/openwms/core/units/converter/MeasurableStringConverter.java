@@ -67,6 +67,6 @@ public class MeasurableStringConverter extends DozerConverter<Measurable, Measur
         if (weightUnit.isPresent()) {
             return Weight.of(Integer.parseInt(source.getAmount()), weightUnit.get());
         }
-        throw new MappingException(format("Type not supported [%s]", source));
+        throw new MappingException(format("Measurable type not supported [%s]", source));
     }
 }
