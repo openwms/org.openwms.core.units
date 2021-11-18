@@ -13,7 +13,7 @@
     <url>https://openwms.github.io/${project.artifactId}/index.html</url>
 
     <issueManagement>
-        <system>GitHUb</system>
+        <system>GitHub</system>
         <url>https://github.com/openwms/${project.artifactId}/issues</url>
     </issueManagement>
 
