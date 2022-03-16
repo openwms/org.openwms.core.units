@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -147,11 +146,9 @@ public class UnitUserType implements CompositeUserType {
         String unitType = val[0];
         String unitTypeClass = val[1];
         if (Piece.class.getCanonicalName().equals(unitTypeClass)) {
-            int amount = rs.getInt(names[1]);
-            return Piece.of(amount, PieceUnit.valueOf(unitType));
+            return Piece.of(rs.getBigDecimal(names[1]), PieceUnit.valueOf(unitType));
         } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {
-            BigDecimal amount = rs.getBigDecimal(names[1]);
-            return Weight.of(amount, WeightUnit.valueOf(unitType));
+            return Weight.of(rs.getBigDecimal(names[1]), WeightUnit.valueOf(unitType));
         }
         throw new TypeMismatchException(format("Incompatible type: [%s]", unitTypeClass));
     }
