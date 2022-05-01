@@ -32,8 +32,8 @@ public enum PieceUnit implements BaseUnit<PieceUnit> {
     /** A Dozen. */
     DOZ(new BigDecimal(12));
 
-    private BigDecimal magnitude;
-    private static PieceUnit[] all = { PieceUnit.PC, PieceUnit.DOZ };
+    private final BigDecimal magnitude;
+    private static final PieceUnit[] all = { PieceUnit.PC, PieceUnit.DOZ };
 
     /**
      * Create a new {@code PieceUnit}.

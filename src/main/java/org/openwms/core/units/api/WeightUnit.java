@@ -30,7 +30,7 @@ import java.util.List;
 public enum WeightUnit implements BaseUnit<WeightUnit> {
 
     /** Milligram. */
-    MG(new BigDecimal(.001)),
+    MG(new BigDecimal("0.001")),
     /** Gram. */
     G(new BigDecimal(1)),
     /** Kilogram. */
@@ -38,8 +38,8 @@ public enum WeightUnit implements BaseUnit<WeightUnit> {
     /** Tons. */
     T(new BigDecimal(1_000_000));
 
-    private BigDecimal magnitude;
-    private static WeightUnit[] all = { WeightUnit.MG, WeightUnit.G, WeightUnit.KG, WeightUnit.T };
+    private final BigDecimal magnitude;
+    private static final WeightUnit[] all = { WeightUnit.MG, WeightUnit.G, WeightUnit.KG, WeightUnit.T };
 
     /**
      * Create a new {@code WeightUnit}.

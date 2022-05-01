@@ -19,15 +19,6 @@ import com.github.dozermapper.core.DozerConverter;
 import com.github.dozermapper.core.MappingException;
 import org.openwms.core.units.api.Measurable;
 import org.openwms.core.units.api.MeasurableString;
-import org.openwms.core.units.api.Piece;
-import org.openwms.core.units.api.PieceUnit;
-import org.openwms.core.units.api.Weight;
-import org.openwms.core.units.api.WeightUnit;
-
-import java.util.Arrays;
-import java.util.Optional;
-
-import static java.lang.String.format;
 
 /**
  * A MeasurableStringConverter.
@@ -56,17 +47,10 @@ public class MeasurableStringConverter extends DozerConverter<Measurable, Measur
      */
     @Override
     public Measurable convertFrom(MeasurableString source, Measurable destination) {
-        if (source == null) {
-            return null;
+        try {
+            return Units.getMeasurable(source);
+        } catch (Exception e) {
+            throw new MappingException(e.getMessage(), e);
         }
-        Optional<PieceUnit> pieceUnit = Arrays.stream(PieceUnit.values()).filter(v -> v.name().equals(source.getUnit())).findFirst();
-        if (pieceUnit.isPresent()) {
-            return Piece.of(Integer.parseInt(source.getAmount()), pieceUnit.get());
-        }
-        Optional<WeightUnit> weightUnit = Arrays.stream(WeightUnit.values()).filter(v -> v.name().equals(source.getUnit())).findFirst();
-        if (weightUnit.isPresent()) {
-            return Weight.of(Integer.parseInt(source.getAmount()), weightUnit.get());
-        }
-        throw new MappingException(format("Measurable type not supported [%s]", source));
     }
 }
