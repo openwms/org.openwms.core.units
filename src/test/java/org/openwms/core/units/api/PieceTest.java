@@ -47,7 +47,7 @@ class PieceTest {
         Piece p50_0 = Piece.of(BigDecimal.valueOf(50), PC);
 
         Piece p502 = p50_0.convertTo(DOZ);
-        assertThat(p502.equals(p50_0)).isFalse();
+        assertThat(p502).isNotEqualTo(p50_0);
 
         assertThat(p502.getMagnitude()).isEqualTo(new BigDecimal(4));
         assertThat(p502.getUnitType()).isEqualTo(DOZ);

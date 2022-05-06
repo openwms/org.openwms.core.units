@@ -57,7 +57,10 @@ public final class Units {
     }
 
     public static BigDecimal getBigDecimalMagnitude(Number magnitude) {
-        return magnitude instanceof BigDecimal ? (BigDecimal) magnitude : BigDecimal.valueOf(magnitude.doubleValue());
+        if (magnitude instanceof BigDecimal asBigDecimal) {
+            return asBigDecimal;
+        }
+        return BigDecimal.valueOf(magnitude.doubleValue());
     }
 
     public static Optional<Measurable> getMeasurableOptional(String name) {

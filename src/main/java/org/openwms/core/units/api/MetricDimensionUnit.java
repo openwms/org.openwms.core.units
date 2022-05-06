@@ -27,13 +27,13 @@ import java.util.List;
 public enum MetricDimensionUnit implements BaseUnit<MetricDimensionUnit>  {
 
     /** Millimeters. */
-    MM(new BigDecimal(.001)),
+    MM(BigDecimal.valueOf(.001)),
 
     /** Centimeters. */
-    CM(new BigDecimal(.01)),
+    CM(BigDecimal.valueOf(.01)),
 
     /** Decimeters. */
-    DM(new BigDecimal(.1)),
+    DM(BigDecimal.valueOf(.1)),
 
     /** Meters. */
     M(new BigDecimal(1))
