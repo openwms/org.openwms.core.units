@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,11 +72,9 @@ public class UnitUserType implements CompositeUserType {
      */
     @Override
     public Object getPropertyValue(Object component, int property) {
-        if (component instanceof Piece) {
-            Piece piece = (Piece) component;
+        if (component instanceof Piece piece) {
             return property == 0 ? piece.getUnitType() : piece.getMagnitude();
-        } else if (component instanceof Weight) {
-            Weight weight = (Weight) component;
+        } else if (component instanceof Weight weight) {
             return property == 0 ? weight.getUnitType() : weight.getMagnitude();
         }
         throw new TypeMismatchException(format("Incompatible type [%s]", component.getClass()));
@@ -83,12 +82,18 @@ public class UnitUserType implements CompositeUserType {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * We have immutable types, throw an UnsupportedOperationException here.
      */
     @Override
     public void setPropertyValue(Object component, int property, Object value) {
-        throw new UnsupportedOperationException("Unit types are immutable");
+        if (value instanceof PieceUnit piece) {
+            component = property == 0 ? piece.getBaseUnit() : piece.getMagnitude();
+        } else if (value instanceof WeightUnit weight) {
+            component = property == 0 ? weight.getBaseUnit() : weight.getMagnitude();
+        } else if (value instanceof BigDecimal val) {
+            component = val;
+        } else {
+            throw new UnsupportedOperationException(format("Type [%s] not supported", value));
+        }
     }
 
     /**
@@ -164,16 +169,14 @@ public class UnitUserType implements CompositeUserType {
             st.setNull(index, StandardBasicTypes.STRING.sqlType());
             st.setNull(index + 1, StandardBasicTypes.STRING.sqlType());
         } else {
-            if (value instanceof Piece) {
-                Piece piece = (Piece) value;
+            if (value instanceof Piece piece) {
                 st.setString(index, piece.getUnitType().toString() + "@" + Piece.class.getCanonicalName());
                 st.setString(index + 1, piece.getMagnitude().toPlainString());
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Binding [{}@{}] to parameter [{}]", piece.getUnitType(), Piece.class.getCanonicalName(), index);
                     LOGGER.trace("Binding [{}] to parameter [{}]", piece.getMagnitude().toPlainString(), (index + 1));
                 }
-            } else if (value instanceof Weight) {
-                Weight weight = (Weight) value;
+            } else if (value instanceof Weight weight) {
                 st.setString(index, weight.getUnitType().toString() + "@" + Weight.class.getCanonicalName());
                 st.setString(index + 1, weight.getMagnitude().toPlainString());
                 if (LOGGER.isTraceEnabled()) {
