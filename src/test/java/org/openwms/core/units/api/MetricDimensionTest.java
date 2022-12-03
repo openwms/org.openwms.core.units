@@ -41,19 +41,19 @@ class MetricDimensionTest {
         assertThat(one_CM.getMagnitude()).isEqualTo(new BigDecimal(1));
         assertThat(new BigDecimal("100").subtract(one_M.getMagnitude())).isEqualTo(new BigDecimal(0));
         assertThat(one_M.getUnitType()).isEqualTo(CM);
-        assertThat(one_CM.compareTo(one_M)).isNegative();
-        assertThat(one_CM.toString()).isEqualTo("1 CM");
+        assertThat(one_CM.compareTo(one_M)).isLessThan(0);
+        assertThat(one_CM).hasToString("1 CM");
     }
 
     @Test void testComparison() {
         Weight one_GRAM = Weight.of(1, WeightUnit.G);
         Weight one_TON = Weight.of(1, WeightUnit.T);
-        assertThat(one_GRAM.compareTo(one_TON)).isNegative();
-        assertThat(one_TON.compareTo(one_GRAM)).isPositive();
+        assertThat(one_GRAM.compareTo(one_TON)).isLessThan(0);
+        assertThat(one_TON.compareTo(one_GRAM)).isGreaterThan(0);
 
         Weight two_GRAM = Weight.of(2, WeightUnit.G);
-        assertThat(one_GRAM.compareTo(two_GRAM)).isNegative();
-        assertThat(two_GRAM.compareTo(one_GRAM)).isPositive();
+        assertThat(one_GRAM.compareTo(two_GRAM)).isLessThan(0);
+        assertThat(two_GRAM.compareTo(one_GRAM)).isGreaterThan(0);
 
         Weight w4 = Weight.of(new BigDecimal("0.000002"), WeightUnit.T);
         two_GRAM = two_GRAM.convertTo(WeightUnit.T);

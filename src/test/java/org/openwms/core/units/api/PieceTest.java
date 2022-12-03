@@ -43,11 +43,11 @@ class PieceTest {
     }
 
     @Test void testConversion() {
-        Piece p30 = Piece.of(30);
-        Piece p50 = Piece.of(50, PC);
+        Piece p30_1 = Piece.of(BigDecimal.valueOf(30.1));
+        Piece p50_0 = Piece.of(BigDecimal.valueOf(50), PC);
 
-        Piece p502 = p50.convertTo(DOZ);
-        assertThat(p502.equals(p50)).isFalse();
+        Piece p502 = p50_0.convertTo(DOZ);
+        assertThat(p502).isNotEqualTo(p50_0);
 
         assertThat(p502.getMagnitude()).isEqualTo(new BigDecimal(4));
         assertThat(p502.getUnitType()).isEqualTo(DOZ);
@@ -55,16 +55,16 @@ class PieceTest {
         assertThat(p502).isEqualTo(Piece.of(4, DOZ));
         assertThat(p502).isNotEqualTo(Piece.of(50, PC));
         assertThat(p502).isEqualTo(Piece.of(48, PC));
-        assertThat(p50.getUnitType()).isEqualTo(PC);
+        assertThat(p50_0.getUnitType()).isEqualTo(PC);
 
-        assertThat(p50.compareTo(p30)).isEqualTo(1);
-        assertThat(p30.compareTo(p50)).isEqualTo(-1);
+        assertThat(p50_0.compareTo(p30_1)).isEqualTo(1);
+        assertThat(p30_1.compareTo(p50_0)).isEqualTo(-1);
 
         Piece p5doz = Piece.of(5, DOZ);
-        assertThat(p5doz.compareTo(p50)).isEqualTo(1);
-        assertThat(p5doz.compareTo(p30)).isEqualTo(1);
-        assertThat(p50.compareTo(p5doz)).isEqualTo(-1);
-        assertThat(p30.compareTo(p5doz)).isEqualTo(-1);
+        assertThat(p5doz.compareTo(p50_0)).isEqualTo(1);
+        assertThat(p5doz.compareTo(p30_1)).isEqualTo(1);
+        assertThat(p50_0.compareTo(p5doz)).isEqualTo(-1);
+        assertThat(p30_1.compareTo(p5doz)).isEqualTo(-1);
 
         Piece p60 = Piece.of(60, PC);
         assertThat(p5doz.compareTo(p60)).isEqualTo(0);

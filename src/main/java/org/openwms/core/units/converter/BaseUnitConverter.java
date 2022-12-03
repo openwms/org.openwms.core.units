@@ -64,6 +64,6 @@ public class BaseUnitConverter extends DozerConverter<BaseUnit, String> {
         if (weightUnit.isPresent()) {
             return weightUnit.get();
         }
-        throw new MappingException(format("Type not supported [%s]", source));
+        throw new MappingException(format("BaseUnit type not supported [%s]", source));
     }
 }

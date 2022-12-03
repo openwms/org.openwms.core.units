@@ -37,7 +37,12 @@ class EnsureArchitectureIT {
                     .resideInAPackage("..api..")
                     .should()
                     .onlyDependOnClassesThat()
-                    .resideInAnyPackage("..api..", "java..", "org.apache.commons..")
+                    .resideInAnyPackage(
+                            "..api..",
+                            "com.fasterxml..",
+                            "java..",
+                            "org.apache.commons.."
+                    )
                     .because("The API package is separated and the only package accessible by the client")
             ;
 
