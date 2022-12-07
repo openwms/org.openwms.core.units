@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.openwms.core.units.jackson;
+package org.openwms.core.units.jsr385.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -76,7 +76,7 @@ public class UnitJacksonModule extends SimpleModule {
          * Serialization-mode using {@link UCUMFormat}. This is the <strong>default</strong> mode if none is explicitly selected.
          */
         UCUM
-    };
+    }
     
     /**
      * @since 2.0.2

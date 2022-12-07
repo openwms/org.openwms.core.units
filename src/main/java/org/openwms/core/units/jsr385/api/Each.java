@@ -13,50 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openwms.core.units.api;
+package org.openwms.core.units.jsr385.api;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.quantity.Quantities;
 
-import javax.measure.Dimension;
-import javax.measure.Unit;
-import javax.measure.UnitConverter;
+import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
-import java.util.Map;
+import java.io.Serializable;
 
 /**
- * A Each.
+ * A Each represents a dimensionless unit.
  *
  * @author Heiko Scherrer
  */
-public class Each extends AbstractUnit<Dimensionless> {
+public final class Each implements Serializable {
 
-    @Override
-    public UnitConverter getSystemConverter() {
-        return null;
-    }
+    private Each() { }
 
-    @Override
-    protected Unit<Dimensionless> toSystemUnit() {
-        return null;
-    }
-
-    @Override
-    public Map<? extends Unit<?>, Integer> getBaseUnits() {
-        return null;
-    }
-
-    @Override
-    public Dimension getDimension() {
-        return null;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
+    /**
+     * Create a new Each instance with the given {@code amount}.
+     *
+     * @param amount The amount of the Each
+     * @return A new instance
+     */
+    public static Quantity<Dimensionless> of(double amount) {
+        return Quantities.getQuantity(amount, AbstractUnit.ONE);
     }
 }

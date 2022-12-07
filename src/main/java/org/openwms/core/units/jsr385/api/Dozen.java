@@ -13,43 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openwms.core.units.api;
+package org.openwms.core.units.jsr385.api;
 
-import org.junit.jupiter.api.Test;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.io.Serializable;
 
 /**
- * A EachTest.
+ * A Dozen represents a dimensionless 12-each unit.
  *
  * @author Heiko Scherrer
  */
-class EachTest {
+public final class Dozen implements Serializable {
 
-    @Test
-    void compare_eaches_with_dozens() {
-        var TWELVE_EACHES = Piece.of(12);
-        var ONE_DOZEN = Dozen.of(1);
-        assertThat(ONE_DOZEN).isEqualTo(TWELVE_EACHES);
+    private Dozen() { }
 
-        var ONE_EACH = Piece.of(1);
-        assertThat(ONE_EACH.add(ONE_DOZEN)).isEqualTo(Piece.of(13));
-    }
-
-    static class Piece {
-        static Quantity<Dimensionless> of(double amount) {
-            return Quantities.getQuantity(amount, AbstractUnit.ONE);
-        }
-    }
-
-    static class Dozen {
-        static Quantity<Dimensionless> of(double amount) {
-            return Quantities.getQuantity(12 * amount, AbstractUnit.ONE);
-        }
+    /**
+     * Create a new Dozen instance with the given {@code amount}.
+     *
+     * @param amount The amount of the Dozen
+     * @return A new instance
+     */
+    public static Quantity<Dimensionless> of(double amount) {
+        return Quantities.getQuantity(12 * amount, AbstractUnit.ONE);
     }
 }

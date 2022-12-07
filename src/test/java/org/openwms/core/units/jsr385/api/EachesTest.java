@@ -13,14 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openwms.core.units.api;
+package org.openwms.core.units.jsr385.api;
 
-import javax.measure.Quantity;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A EachUnit.
+ * A EachesTest.
  *
  * @author Heiko Scherrer
  */
-public interface EachUnit extends Quantity<EachUnit> {
+class EachesTest {
+
+    @Test
+    void compare_eaches_with_dozens() {
+        var TWELVE_EACHES = Each.of(12);
+        var ONE_DOZEN = Dozen.of(1);
+        assertThat(ONE_DOZEN).isEqualTo(TWELVE_EACHES);
+
+        var ONE_EACH = Each.of(1);
+        assertThat(ONE_EACH.add(ONE_DOZEN)).isEqualTo(Each.of(13));
+    }
 }
