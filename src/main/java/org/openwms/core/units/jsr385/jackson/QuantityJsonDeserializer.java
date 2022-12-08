@@ -46,14 +46,13 @@ import java.math.BigDecimal;
 /**
  * @author bantu
  */
-@SuppressWarnings("rawtypes")
-public class QuantityJsonDeserializer extends StdDeserializer<Quantity> {
+public class QuantityJsonDeserializer extends StdDeserializer<Quantity<?>> {
     public QuantityJsonDeserializer() {
         super(Quantity.class);
     }
 
     @Override
-    public Quantity deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
+    public Quantity<?> deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
         TreeNode root = jp.readValueAsTree();
         if (root.get("value") == null) {
             throw new JsonParseException(jp, "Value not found for quantity type.");
@@ -64,7 +63,6 @@ public class QuantityJsonDeserializer extends StdDeserializer<Quantity> {
         if (root.get("scale") == null) {
             throw new JsonParseException(jp, "Scale not found for quantity type.");
         }
-
         ObjectCodec codec = jp.getCodec();
         BigDecimal value = codec.treeToValue(root.get("value"), BigDecimal.class);
         Unit<?> unit = codec.treeToValue(root.get("unit"), Unit.class);
