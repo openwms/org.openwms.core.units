@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * @author richter
  * @author keilw
  */
-class DimensionJsonDeserializer extends StdScalarDeserializer<Dimension> {
+public class DimensionJsonDeserializer extends StdScalarDeserializer<Dimension> {
 
     /**
      *

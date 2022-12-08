@@ -42,7 +42,7 @@ import java.io.IOException;
  * @author richter
  * @author keilw
  */
-class DimensionJsonSerializer extends StdScalarSerializer<Dimension> {
+public class DimensionJsonSerializer extends StdScalarSerializer<Dimension> {
 
     /**
 	 * 

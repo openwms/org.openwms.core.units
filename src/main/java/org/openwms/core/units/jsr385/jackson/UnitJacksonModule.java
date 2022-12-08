@@ -104,13 +104,13 @@ public class UnitJacksonModule extends SimpleModule {
     }
 
     @SuppressWarnings("rawtypes")
-    private class UnitJsonSerializer extends StdScalarSerializer<Unit> {
+    public class UnitJsonSerializer extends StdScalarSerializer<Unit> {
         /**
          *
          */
         private static final long serialVersionUID = 2500234678114311932L;
 
-        protected UnitJsonSerializer() {
+        public UnitJsonSerializer() {
             super(Unit.class);
         }
 
