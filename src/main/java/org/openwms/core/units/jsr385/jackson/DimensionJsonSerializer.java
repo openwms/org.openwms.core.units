@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Jackson Library
- * Copyright (c) 2005-2021, Werner Keil and others.
+ * Copyright (c) 2005-2022, Werner Keil and others.
  *
  * All rights reserved.
  *
@@ -36,17 +36,18 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
 import javax.measure.Dimension;
 import java.io.IOException;
+import java.io.Serial;
 
 /**
+ * A DimensionJsonSerializer is a Jackson JSON Serializer that takes care of serializing {@link Dimension} types into JSON.
  *
  * @author richter
  * @author keilw
+ * @author Heiko Scherrer
  */
 public class DimensionJsonSerializer extends StdScalarSerializer<Dimension> {
 
-    /**
-	 * 
-	 */
+    @Serial
 	private static final long serialVersionUID = 1L;
 
 	public DimensionJsonSerializer() {
@@ -54,14 +55,14 @@ public class DimensionJsonSerializer extends StdScalarSerializer<Dimension> {
     }
 
     /**
-     * Serializes a dimension by serializing it's base dimension map.
-     *
+     * Serializes a dimension by serializing its base dimension map.
+     * <p>
      * Based on my question and answer at
-     * https://stackoverflow.com/questions/48509189/jsr-275-dimension-string-serialization-and-deserialization
-     * which might contain better alternatives meanwhile.
+     * https://stackoverflow.com/questions/48509189/jsr-275-dimension-string-serialization-and-deserialization which might contain better
+     * alternatives meanwhile.
      *
-     * @param value       the dimension to serialize
-     * @param gen         the generator as provided by {@link JsonSerializer}
+     * @param value the dimension to serialize
+     * @param gen the generator as provided by {@link JsonSerializer}
      * @param serializers the serializers as provided by {@link JsonSerializer}
      * @throws IOException if an I/O exception occurs
      */

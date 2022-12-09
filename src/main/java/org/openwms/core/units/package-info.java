@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openwms.core.units;
-
 /**
- * A UnitConstants.
- *
- * @author Heiko Scherrer
+ * This package contains the implementation of the OpenWMS.org Units support library.
  */
-public final class UnitConstants {
-
-    /** Length of a Quantity field: {@value} */
-    public static final int QUANTITY_LENGTH = 16;
-    /** Length of a Weight field: {@value} */
-    public static final int WEIGHT_LENGTH = 16;
-
-    private UnitConstants() {
-    }
-}
+package org.openwms.core.units;

@@ -18,32 +18,37 @@ package org.openwms.core.units.jsr385.jackson;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import systems.uom.ucum.format.UCUMFormat;
 
 import javax.measure.Unit;
 import java.io.IOException;
+import java.io.Serial;
 import java.text.ParsePosition;
 
 /**
- * A UnitJsonDeserializer.
+ * A UnitJsonDeserializer is a Jackson JSON Deserializer that takes care of deserializing JSON into {@link Unit} types.
  *
  * @author Heiko Scherrer
  */
-public class UnitJsonDeserializer extends StdScalarDeserializer<Unit> {
+public class UnitJsonDeserializer extends StdScalarDeserializer<Unit<?>> {
 
+    @Serial
     private static final long serialVersionUID = -6327531740958676293L;
 
     public UnitJsonDeserializer() {
         super(Unit.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Unit deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        JsonToken currentToken = jsonParser.getCurrentToken();
-        if (currentToken == JsonToken.VALUE_STRING) {
+    public Unit<?> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        if (jsonParser.getCurrentToken() == JsonToken.VALUE_STRING) {
             return UCUMFormat.getInstance(UCUMFormat.Variant.CASE_SENSITIVE).parse(jsonParser.getText(), new ParsePosition(0));
         }
-        throw deserializationContext.wrongTokenException(jsonParser, JsonToken.VALUE_STRING, "Expected unit value in String format");
+        throw deserializationContext.wrongTokenException(jsonParser, (JavaType) null, JsonToken.VALUE_STRING, "Expected unit value in String format");
     }
 }

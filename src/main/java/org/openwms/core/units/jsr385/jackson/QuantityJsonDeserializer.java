@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Jackson Library
- * Copyright (c) 2005-2021, Werner Keil and others.
+ * Copyright (c) 2005-2022, Werner Keil and others.
  *
  * All rights reserved.
  *
@@ -31,8 +31,6 @@ package org.openwms.core.units.jsr385.jackson;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import tech.units.indriya.quantity.Quantities;
@@ -41,19 +39,30 @@ import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import java.io.IOException;
+import java.io.Serial;
 import java.math.BigDecimal;
 
 /**
+ * A QuantityJsonDeserializer is a Jackson JSON Deserializer that takes care of deserializing JSON into {@link Quantity} types.
+ *
  * @author bantu
+ * @author Heiko Scherrer
  */
 public class QuantityJsonDeserializer extends StdDeserializer<Quantity<?>> {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     public QuantityJsonDeserializer() {
         super(Quantity.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Quantity<?> deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
-        TreeNode root = jp.readValueAsTree();
+        var root = jp.readValueAsTree();
         if (root.get("value") == null) {
             throw new JsonParseException(jp, "Value not found for quantity type.");
         }
@@ -63,10 +72,10 @@ public class QuantityJsonDeserializer extends StdDeserializer<Quantity<?>> {
         if (root.get("scale") == null) {
             throw new JsonParseException(jp, "Scale not found for quantity type.");
         }
-        ObjectCodec codec = jp.getCodec();
-        BigDecimal value = codec.treeToValue(root.get("value"), BigDecimal.class);
+        var codec = jp.getCodec();
+        var value = codec.treeToValue(root.get("value"), BigDecimal.class);
         Unit<?> unit = codec.treeToValue(root.get("unit"), Unit.class);
-        Scale scale = Scale.valueOf(codec.treeToValue(root.get("scale"), String.class));
+        var scale = Scale.valueOf(codec.treeToValue(root.get("scale"), String.class));
 
         return Quantities.getQuantity(value, unit, scale);
     }

@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Jackson Library
- * Copyright (c) 2005-2021, Werner Keil and others.
+ * Copyright (c) 2005-2022, Werner Keil and others.
  *
  * All rights reserved.
  *
@@ -53,6 +53,7 @@ import java.text.ParsePosition;
  * Configures Jackson to (de)serialize JSR 385 Unit objects using their UCUM representation, since the actual objects don't
  * translate well into JSON.
  * @version 2.1
+ * @author Heiko Scherrer
  */
 public class UnitJacksonModule extends SimpleModule {
     /**

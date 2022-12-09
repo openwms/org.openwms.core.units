@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Jackson Library
- * Copyright (c) 2005-2021, Werner Keil and others.
+ * Copyright (c) 2005-2022, Werner Keil and others.
  *
  * All rights reserved.
  *
@@ -30,66 +30,61 @@
 package org.openwms.core.units.jsr385.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import tech.units.indriya.unit.UnitDimension;
 
 import javax.measure.Dimension;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * A DimensionJsonDeserializer is a Jackson JSON Deserializer that takes care of deserializing JSON into {@link Dimension} types.
+ *
  * @author richter
  * @author keilw
+ * @author Heiko Scherrer
  */
 public class DimensionJsonDeserializer extends StdScalarDeserializer<Dimension> {
 
-    /**
-     *
-     */
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public DimensionJsonDeserializer() {
         super(Dimension.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Dimension deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         @SuppressWarnings("unchecked")
 		Map<String, Integer> baseDimensionsStrings = p.readValueAs(Map.class);
-        Map<Dimension, Integer> baseDimensions = new HashMap<>(baseDimensionsStrings.entrySet().stream()
-                .collect(Collectors.toMap(entry -> parseBaseDimension(entry.getKey()), entry -> entry.getValue())));
-        Dimension retValue = UnitDimension.NONE;
-        for (Dimension baseDimension : baseDimensions.keySet()) {
-            int exp = baseDimensions.get(baseDimension);
-            retValue = retValue.multiply(baseDimension.pow(exp));
+        var baseDimensions = new HashMap<>(baseDimensionsStrings.entrySet().stream()
+                .collect(Collectors.toMap(entry -> parseBaseDimension(entry.getKey()), Map.Entry::getValue)));
+        var retValue = UnitDimension.NONE;
+        for (var entry : baseDimensions.entrySet()) {
+            int exp = entry.getValue();
+            retValue = retValue.multiply(entry.getKey().pow(exp));
         }
         return retValue;
     }
 
     private static Dimension parseBaseDimension(String symbol) {
-        switch (symbol) {
-            case "[N]":
-                return UnitDimension.AMOUNT_OF_SUBSTANCE;
-            case "[I]":
-                return UnitDimension.ELECTRIC_CURRENT;
-            case "[L]":
-                return UnitDimension.LENGTH;
-            case "[J]":
-                return UnitDimension.LUMINOUS_INTENSITY;
-            case "[M]":
-                return UnitDimension.MASS;
-            case "[\u0398]":
-                return UnitDimension.TEMPERATURE;
-            case "[T]":
-                return UnitDimension.TIME;
-            default:
-                throw new IllegalArgumentException(String.format(
-                        "dimension " + "symbol '%s' not supported, maybe dimensionless or " + "wrong universe?", symbol));
-        }
+        return switch (symbol) {
+            case "[N]" -> UnitDimension.AMOUNT_OF_SUBSTANCE;
+            case "[I]" -> UnitDimension.ELECTRIC_CURRENT;
+            case "[L]" -> UnitDimension.LENGTH;
+            case "[J]" -> UnitDimension.LUMINOUS_INTENSITY;
+            case "[M]" -> UnitDimension.MASS;
+            case "[\u0398]" -> UnitDimension.TEMPERATURE;
+            case "[T]" -> UnitDimension.TIME;
+            default -> throw new IllegalArgumentException(String.format("dimension symbol [%s] not supported, maybe dimensionless or wrong universe?", symbol));
+        };
     }
 }
