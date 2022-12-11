@@ -58,10 +58,8 @@ public class WMSUnits {
     public static boolean exists(String unit, String unitType) {
         if (Each.class.getCanonicalName().equals(unitType) && "PC".equals(unit)) {
             return true;
-        } else if (Dozen.class.getCanonicalName().equals(unitType) && "DOZ".equals(unit)) {
-            return true;
         }
-        return false;
+        return Dozen.class.getCanonicalName().equals(unitType) && "DOZ".equals(unit);
     }
 
     /**
@@ -72,7 +70,8 @@ public class WMSUnits {
      * @throws NullPointerException In case the unit {@literal null}
      * @throws UnitConversionException In case the unit is not supported
      */
-    public static Unit<?> parse(String unit) {
+    @SuppressWarnings("rawtypes")
+    public static Unit parse(String unit) {
         Objects.requireNonNull(unit, "Unit must not be null");
         if (exists(unit)) {
             return AbstractUnit.ONE;
