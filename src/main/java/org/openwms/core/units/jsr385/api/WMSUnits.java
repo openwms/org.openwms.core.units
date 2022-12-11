@@ -17,6 +17,8 @@ package org.openwms.core.units.jsr385.api;
 
 import org.openwms.core.units.api.UnitConversionException;
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -93,5 +95,16 @@ public class WMSUnits {
             return Dozen.of(value);
         }
         throw new UnitConversionException(format("Not a supported unit [%s]", unit));
+    }
+
+    /**
+     * Get a quantity with zero amount and the given {@code unit}.
+     *
+     * @param unit The unit of the quantity
+     * @return A new instance
+     * @param <Q> Type of unit
+     */
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> ZERO(Unit<Q> unit) {
+        return Quantities.getQuantity(0, unit);
     }
 }
