@@ -29,45 +29,33 @@
  */
 package org.openwms.core.units.jsr385.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import javax.measure.Dimension;
-import java.io.IOException;
+import javax.measure.Quantity;
+import javax.measure.Unit;
 import java.io.Serial;
 
 /**
- * A DimensionJsonSerializer is a Jackson JSON Serializer that takes care of serializing {@link Dimension} types into JSON.
+ * Configures Jackson to (de)serialize JSR 385 types.
  *
- * @author richter
- * @author keilw
  * @author Heiko Scherrer
  */
-public class DimensionJsonSerializer extends StdScalarSerializer<Dimension> {
+public class JSR385JacksonModule extends SimpleModule {
 
     @Serial
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    
+    public JSR385JacksonModule() {
+        super("JSR385JacksonModule", new Version(1, 0, 0, null, "org.openwms", "org.openwms.core.units"));
+        addSerializer(Dimension.class, new DimensionHandlers.DimensionJsonSerializer());
+        addDeserializer(Dimension.class, new DimensionHandlers.DimensionJsonDeserializer());
 
-	public DimensionJsonSerializer() {
-        super(Dimension.class);
-    }
+        addSerializer(Unit.class, new UnitHandlers.UnitJsonSerializer());
+        addDeserializer(Unit.class, new UnitHandlers.UnitJsonDeserializer());
 
-    /**
-     * Serializes a dimension by serializing its base dimension map.
-     * <p>
-     * Based on my question and answer at
-     * https://stackoverflow.com/questions/48509189/jsr-275-dimension-string-serialization-and-deserialization which might contain better
-     * alternatives meanwhile.
-     *
-     * @param value the dimension to serialize
-     * @param gen the generator as provided by {@link JsonSerializer}
-     * @param serializers the serializers as provided by {@link JsonSerializer}
-     * @throws IOException if an I/O exception occurs
-     */
-    @Override
-    public void serialize(Dimension value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeObject(value.getBaseDimensions());
+        addSerializer(Quantity.class, new QuantityHandlers.QuantityJsonSerializer());
+        addDeserializer(Quantity.class, new QuantityHandlers.QuantityJsonDeserializer());
     }
 }

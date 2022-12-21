@@ -20,15 +20,14 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
-import org.openwms.core.units.jsr385.api.Dozen;
 import org.openwms.core.units.jsr385.api.Each;
 import org.openwms.core.units.jsr385.api.WMSUnits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.UnitDimension;
 
-import javax.measure.Quantity;
 import javax.measure.Unit;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -38,32 +37,28 @@ import java.sql.SQLException;
 import static java.lang.String.format;
 
 /**
- * An JSR385UserType is a custom Hibernate converter for {@code Unit} types of the JSR-385 Unitofmeasures library.
+ * An JSR385UnitUserType is a custom Hibernate converter for {@code Unit} types of the JSR-385 Unitofmeasures library.
  *
  * @author Heiko Scherrer
  */
-public class JSR385UserType implements CompositeUserType {
+public class JSR385UnitUserType implements CompositeUserType {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JSR385UserType.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSR385UnitUserType.class);
 
     /**
      * {@inheritDoc}
-     *
-     * We expect that every unit has at least two mandatory fields, named {@code unit} for the unit and {@code value} for the amount.
      */
     @Override
     public String[] getPropertyNames() {
-        return new String[]{"value", "unit"};
+        return new String[]{"unit"};
     }
 
     /**
      * {@inheritDoc}
-     *
-     * The amount is stored as {@link StandardBasicTypes#STRING} and the unit as usual {@link StandardBasicTypes#STRING}.
      */
     @Override
     public Type[] getPropertyTypes() {
-        return new Type[]{StandardBasicTypes.STRING, StandardBasicTypes.STRING};
+        return new Type[]{StandardBasicTypes.STRING};
     }
 
     /**
@@ -71,10 +66,8 @@ public class JSR385UserType implements CompositeUserType {
      */
     @Override
     public Object getPropertyValue(Object component, int property) {
-        if (component instanceof Each<?> piece) {
-            return property == 0 ? piece.getValue() : piece.getUnit();
-        } else if (component instanceof Dozen<?> dozen) {
-            return property == 0 ? dozen.getValue() : dozen.getUnit();
+        if (component instanceof Unit<?> unit) {
+            return unit;
         }
         throw new TypeMismatchException(format("Incompatible type [%s]", component.getClass()));
     }
@@ -84,23 +77,21 @@ public class JSR385UserType implements CompositeUserType {
      */
     @Override
     public void setPropertyValue(Object component, int property, Object value) {
-        if (component instanceof Each<?> piece) {
-            component = property == 0 ? piece.getValue() : piece.getUnit();
-        } else if (component instanceof Dozen<?> dozen) {
-            component = property == 0 ? dozen.getValue() : dozen.getUnit();
+        if (value instanceof Unit<?> unit) {
+            component = unit.toString();
         } else {
-            throw new TypeMismatchException(format("Type [%s] not supported", value));
+            throw new UnsupportedOperationException(format("Type [%s] not supported", value));
         }
     }
 
     /**
      * {@inheritDoc}
      *
-     * We do not know the concrete implementation here and return the {@link Quantity} class type.
+     * We do not know the concrete implementation here and return the {@link Unit} class type.
      */
     @Override
     public Class returnedClass() {
-        return Quantity.class;
+        return Unit.class;
     }
 
     /**
@@ -143,14 +134,10 @@ public class JSR385UserType implements CompositeUserType {
         String unitTypeClass = parts[1];
         // First try with custom implementation
         if (WMSUnits.exists(unit, unitTypeClass)) {
-            var res = WMSUnits.getQuantity(rs.getDouble(names[1]), unit);
-            if (res.isPresent()) {
-                return res.get();
-            }
-            throw new TypeMismatchException(format("Unit is unknown [%s]", unit));
+            return WMSUnits.resolve(unitTypeClass);
         }
         parse = SimpleUnitFormat.getInstance().parse(unit);
-        return Quantities.getQuantity(rs.getBigDecimal(names[1]), parse);
+        return Quantities.getQuantity(0, parse).getUnit();
     }
 
     /**
@@ -162,16 +149,12 @@ public class JSR385UserType implements CompositeUserType {
     public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws SQLException {
         if (value == null) {
             st.setNull(index, StandardBasicTypes.STRING.sqlType());
-            st.setNull(index + 1, StandardBasicTypes.STRING.sqlType());
         } else {
-            if (value instanceof Quantity<?> qty) {
-                if (Each.EACH_UNIT.getSymbol().equals(qty.getUnit().getSymbol())) {
-                    st.setString(index, qty.getUnit().getSymbol() + "@" + Each.class.getCanonicalName());
-                    String amount = qty.getValue().toString();//WMSUnits.getQuantity(qty.getValue().doubleValue(), qty.getUnit().getSymbol()).toString();
-                    st.setString(index + 1, amount);
+            if (value instanceof Unit unit) {
+                if (UnitDimension.NONE.equals(unit.getDimension())) {
+                    st.setString(index, unit.getSymbol() + "@" + Each.class.getCanonicalName());
                     if (LOGGER.isTraceEnabled()) {
-                        LOGGER.trace("Binding [{}@{}] to parameter [{}]", qty.getUnit().getSymbol(), Each.class.getCanonicalName(), index);
-                        LOGGER.trace("Binding [{}] to parameter [{}]", amount, (index + 1));
+                        LOGGER.trace("Binding [{}] to parameter [{}]", Each.class.getCanonicalName(), index);
                     }
                     return;
                 }

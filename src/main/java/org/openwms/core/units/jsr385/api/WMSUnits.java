@@ -17,13 +17,15 @@ package org.openwms.core.units.jsr385.api;
 
 import org.openwms.core.units.api.UnitConversionException;
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.ProductUnit;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -34,7 +36,7 @@ import static java.lang.String.format;
  */
 public class WMSUnits {
 
-    public static final Unit<Dimensionless> EACH = AbstractUnit.ONE;
+    public static final Unit<Dimensionless> EACH = new ProductUnit(AbstractUnit.ONE);//<Dimensionless>.AbstractUnit.ONE;
     public static final Unit<Dimensionless> DOZEN = AbstractUnit.ONE;
 
     private WMSUnits() { }
@@ -62,6 +64,24 @@ public class WMSUnits {
         return Dozen.class.getCanonicalName().equals(unitType) && "DOZ".equals(unit);
     }
 
+    public static Unit resolve(String unit, String shortUnitType) {
+        if (Each.class.getSimpleName().equals(shortUnitType) && "PC".equals(unit)) {
+            return Each.of(0).getUnit();
+        }
+        else if(Dozen.class.getSimpleName().equals(shortUnitType) && "DOZ".equals(unit)) {
+            return Dozen.of(0).getUnit();
+        }
+        throw new UnitConversionException(format("Not a supported unit [%s / %s]", unit, shortUnitType));
+    }
+    public static Unit<?> resolve(String unitType) {
+        if (Each.class.getCanonicalName().equals(unitType)) {
+            return Each.of(0).getUnit();
+        } else if (Dozen.class.getCanonicalName().equals(unitType)) {
+            return Dozen.of(0).getUnit();
+        }
+        return null;
+    }
+
     /**
      * Parse the given {@code unit} string into a supported Unit type.
      *
@@ -87,13 +107,13 @@ public class WMSUnits {
      * @return A new instance
      * @throws UnitConversionException In case the unit is not supported or {@literal null}
      */
-    public static Quantity<Dimensionless> getQuantity(double value, String unit) {
+    public static Optional<Quantity<?>> getQuantity(double value, String unit) {
         if ("PC".equals(unit)) {
-            return Each.of(value);
+            return Optional.of(Each.of(value));
         } else if ("DOZ".equals(unit)) {
-            return Dozen.of(value);
+            return Optional.of(Dozen.of(value));
         }
-        throw new UnitConversionException(format("Not a supported unit [%s]", unit));
+        return Optional.empty();
     }
 
     /**
@@ -103,7 +123,63 @@ public class WMSUnits {
      * @return A new instance
      * @param <Q> Type of unit
      */
-    public static <Q extends Quantity<Q>> ComparableQuantity<Q> ZERO(Unit<Q> unit) {
+    public static <Q extends Quantity<Q>> Quantity<Q> ZERO(Unit<Q> unit) {
         return Quantities.getQuantity(0, unit);
+    }
+
+    public static Optional<Quantity<?>> getQuantity(String quantity) {
+        var parts = quantity.split(" ");
+        if (parts.length != 2) {
+            return Optional.empty();
+        }
+        return WMSUnits.getQuantity(Double.parseDouble(parts[0]), parts[1]);
+    }
+
+    /**
+     * Get a quantity with zero amount and the given {@code unit}.
+     *
+     * @param unit The unit of the quantity
+     * @return A new instance
+     * @param <Q> Type of unit
+     */
+    public static <Q extends Quantity<Q>> boolean isNegative(Quantity<Q> quantity) {
+        return NumberUtils.signum(quantity.getValue()) == -1;
+    }
+
+    /**
+     * Get a quantity with zero amount and the given {@code unit}.
+     *
+     * @param unit The unit of the quantity
+     * @return A new instance
+     * @param <Q> Type of unit
+     */
+    public static <Q extends Quantity<Q>> boolean isZeroOrNegative(Quantity<Q> quantity) {
+        var res = NumberUtils.signum(quantity.getValue());
+        return res == -1 || res == 0;
+    }
+
+    /**
+     * Optionally converts given {@link Quantity} to desired {@link Unit},
+     * based on whether both units are compatible.
+     */
+    @SuppressWarnings("unchecked")
+    public static <Q extends Quantity<Q>> Optional<Quantity<Q>> asUnit(Quantity<?> quantity, Unit<Q> unit) {
+        return quantity.getUnit().isCompatible(unit)
+                ? Optional.of(((Quantity<Q>)quantity).to(unit))
+                : Optional.empty();
+    }
+
+    public static boolean isComparable(Quantity<?> quantity, Quantity<?> withQuantity) {
+        return quantity.getUnit().isCompatible(withQuantity.getUnit());
+    }
+
+    public static int compareQuantities(Quantity qty1, Quantity qty2) {
+        if (qty1.getUnit().equals(qty2.getUnit())) {
+            return Calculus.currentNumberSystem().compare(qty1.getValue(), qty2.getValue());
+        }
+        if (!isComparable(qty1, qty2)) {
+            throw new UnitConversionException(format("Units not comparable [%s] [%s]", qty1, qty2));
+        }
+        return Calculus.currentNumberSystem().compare(qty1.getValue(), qty2.to(qty1.getUnit()).getValue());
     }
 }

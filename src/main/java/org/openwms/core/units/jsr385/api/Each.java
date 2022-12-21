@@ -15,10 +15,13 @@
  */
 package org.openwms.core.units.jsr385.api;
 
-import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.BaseUnit;
 
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
 import java.io.Serializable;
 
@@ -27,9 +30,15 @@ import java.io.Serializable;
  *
  * @author Heiko Scherrer
  */
-public final class Each implements Serializable {
+public final class Each<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
 
-    private Each() { }
+    public static final Unit<Dimensionless> EACH_UNIT = new BaseUnit<>("PC", "Each", AbstractQuantity.ONE.getUnit().getDimension());
+    private final Quantity<Q> delegate;
+
+    private Each(Quantity<Q> delegate) {
+        super(delegate.getUnit());
+        this.delegate = delegate;
+    }
 
     /**
      * Create a new Each instance with the given {@code amount}.
@@ -38,6 +47,51 @@ public final class Each implements Serializable {
      * @return A new instance
      */
     public static Quantity<Dimensionless> of(double amount) {
-        return Quantities.getQuantity(amount, AbstractUnit.ONE);
+        return new Each<>(Quantities.getQuantity(amount, EACH_UNIT));
+    }
+
+    @Override
+    public Number getValue() {
+        return delegate.getValue();
+    }
+
+    @Override
+    public ComparableQuantity<Q> add(Quantity<Q> that) {
+        return new Each(Quantities.getQuantity(delegate.add(that).getValue(), EACH_UNIT));
+    }
+
+    @Override
+    public ComparableQuantity<Q> subtract(Quantity<Q> that) {
+        return new Each(Quantities.getQuantity(delegate.subtract(that).getValue(), EACH_UNIT));
+    }
+
+    @Override
+    public ComparableQuantity<?> divide(Quantity<?> that) {
+        return new Each<>(Quantities.getQuantity(delegate.divide(that).getValue(), EACH_UNIT));
+    }
+
+    @Override
+    public ComparableQuantity<Q> divide(Number that) {
+        return new Each(Quantities.getQuantity(delegate.divide(that).getValue(), EACH_UNIT));
+    }
+
+    @Override
+    public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
+        return new Each<>(Quantities.getQuantity(delegate.multiply(multiplier).getValue(), EACH_UNIT));
+    }
+
+    @Override
+    public ComparableQuantity<Q> multiply(Number multiplier) {
+        return new Each(Quantities.getQuantity(delegate.multiply(multiplier).getValue(), EACH_UNIT));
+    }
+
+    @Override
+    public ComparableQuantity<?> inverse() {
+        return new Each<>(delegate.inverse());
+    }
+
+    @Override
+    public Quantity<Q> negate() {
+        return new Each(Quantities.getQuantity(delegate.negate().getValue(), EACH_UNIT));
     }
 }

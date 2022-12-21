@@ -41,6 +41,8 @@ class EnsureArchitectureIT {
                             "..api..",
                             "com.fasterxml..",
                             "java..",
+                            "javax..",
+                            "tech.units..",
                             "org.apache.commons.."
                     )
                     .because("The API package is separated and the only package accessible by the client")

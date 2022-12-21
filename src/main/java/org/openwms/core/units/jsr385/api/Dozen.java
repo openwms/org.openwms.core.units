@@ -15,7 +15,8 @@
  */
 package org.openwms.core.units.jsr385.api;
 
-import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
@@ -27,9 +28,14 @@ import java.io.Serializable;
  *
  * @author Heiko Scherrer
  */
-public final class Dozen implements Serializable {
+public final class Dozen<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
 
-    private Dozen() { }
+    private final Quantity<Q> delegate;
+
+    private Dozen(Quantity<Q> delegate) {
+        super(delegate.getUnit());
+        this.delegate = delegate;
+    }
 
     /**
      * Create a new Dozen instance with the given {@code amount}.
@@ -38,6 +44,51 @@ public final class Dozen implements Serializable {
      * @return A new instance
      */
     public static Quantity<Dimensionless> of(double amount) {
-        return Quantities.getQuantity(12 * amount, AbstractUnit.ONE);
+        return new Dozen<>(Quantities.getQuantity(12 * amount, Each.EACH_UNIT));
+    }
+
+    @Override
+    public Number getValue() {
+        return delegate.getValue();
+    }
+
+    @Override
+    public ComparableQuantity<Q> add(Quantity<Q> that) {
+        return new Dozen<>(delegate.add(that));
+    }
+
+    @Override
+    public ComparableQuantity<Q> subtract(Quantity<Q> that) {
+        return new Dozen<>(delegate.subtract(that));
+    }
+
+    @Override
+    public ComparableQuantity<?> divide(Quantity<?> that) {
+        return new Dozen<>(delegate.divide(that));
+    }
+
+    @Override
+    public ComparableQuantity<Q> divide(Number that) {
+        return new Dozen<>(delegate.divide(that));
+    }
+
+    @Override
+    public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
+        return new Dozen<>(delegate.multiply(multiplier));
+    }
+
+    @Override
+    public ComparableQuantity<Q> multiply(Number multiplier) {
+        return new Dozen<>(delegate.multiply(multiplier));
+    }
+
+    @Override
+    public ComparableQuantity<?> inverse() {
+        return new Dozen<>(delegate.inverse());
+    }
+
+    @Override
+    public Quantity<Q> negate() {
+        return new Dozen<>(delegate.negate());
     }
 }

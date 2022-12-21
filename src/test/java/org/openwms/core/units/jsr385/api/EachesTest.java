@@ -35,4 +35,27 @@ class EachesTest {
         var ONE_EACH = Each.of(1);
         assertThat(ONE_EACH.add(ONE_DOZEN)).isEqualTo(Each.of(13));
     }
+
+    @Test
+    void test_substraction_of_Each() {
+        assertThat(Each.of(3).subtract(Each.of(1))).isEqualTo(Each.of(2));
+        assertThat(Each.of(3).subtract(Each.of(3))).isEqualTo(Each.of(0));
+        assertThat(Each.of(3).subtract(Each.of(-1))).isEqualTo(Each.of(4));
+        assertThat(Each.of(3).subtract(Each.of(4))).isEqualTo(Each.of(-1));
+    }
+
+    @Test
+    void test_mixed_substraction() {
+        assertThat(Dozen.of(1).subtract(Each.of(1))).isEqualTo(Each.of(11));
+        assertThat(Dozen.of(1).subtract(Each.of(12))).isEqualTo(Each.of(0));
+        assertThat(Dozen.of(1).subtract(Each.of(13))).isEqualTo(Each.of(-1));
+        assertThat(Each.of(1).subtract(Dozen.of(1))).isEqualTo(Each.of(-11));
+    }
+
+    @Test
+    void test_divide_Eaches() {
+        assertThat(Each.of(3).divide(Each.of(1))).isEqualTo(Each.of(3));
+        assertThat(Each.of(4).divide(Each.of(2))).isEqualTo(Each.of(2));
+        assertThat(Each.of(0).divide(Each.of(1))).isEqualTo(Each.of(0));
+    }
 }
