@@ -57,6 +57,9 @@ public final class UnitHandlers {
                 jgen.writeNull();
             }
             else {
+                if (unit.getSymbol() == null || unit.getName() == null) {
+                    throw new IOException("The unit to serialize must provide symbol and name");
+                }
                 jgen.writeString(unit.getSymbol() + "@" + unit.getName());
             }
         }

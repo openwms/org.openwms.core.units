@@ -79,7 +79,9 @@ public final class QuantityHandlers {
             else {
                 jgen.writeStartObject();
                 jgen.writeStringField("value", String.valueOf(quantity.getValue()));
-                jgen.writeStringField("unit", quantity.getUnit().getSymbol() + "@" + quantity.getUnit().getName());
+                var symbol = quantity.getUnit().getSymbol() == null ? quantity.getUnit().toString() : quantity.getUnit().getSymbol();
+                var name = quantity.getUnit().getName() == null ? quantity.getUnit().getClass().getName() : quantity.getUnit().getName();
+                jgen.writeStringField("unit", symbol + "@" + name);
                 jgen.writeEndObject();
             }
         }

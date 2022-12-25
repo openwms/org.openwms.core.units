@@ -26,6 +26,7 @@ import org.openwms.core.units.jsr385.api.WMSUnits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.format.SimpleUnitFormat;
+import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
@@ -75,6 +76,12 @@ public class JSR385UserType implements CompositeUserType {
             return property == 0 ? piece.getValue() : piece.getUnit();
         } else if (component instanceof Dozen<?> dozen) {
             return property == 0 ? dozen.getValue() : dozen.getUnit();
+        } else if (component instanceof NumberQuantity<?> nq) {
+            var unitId = nq.getUnit().getSymbol() == null ? nq.getUnit().getName() : nq.getUnit().getSymbol();
+            if (unitId == null) {
+                throw new TypeMismatchException(format("The unit [%s] does not provide any identifier to store", nq.getUnit()));
+            }
+            return property == 0 ? nq.getValue() : unitId;
         }
         throw new TypeMismatchException(format("Incompatible type [%s]", component.getClass()));
     }
@@ -88,6 +95,8 @@ public class JSR385UserType implements CompositeUserType {
             component = property == 0 ? piece.getValue() : piece.getUnit();
         } else if (component instanceof Dozen<?> dozen) {
             component = property == 0 ? dozen.getValue() : dozen.getUnit();
+        } else if (component instanceof NumberQuantity<?> nq) {
+            component = property == 0 ? nq.getValue() : nq.getUnit();
         } else {
             throw new TypeMismatchException(format("Type [%s] not supported", value));
         }
@@ -167,10 +176,19 @@ public class JSR385UserType implements CompositeUserType {
             if (value instanceof Quantity<?> qty) {
                 if (Each.EACH_UNIT.getSymbol().equals(qty.getUnit().getSymbol())) {
                     st.setString(index, qty.getUnit().getSymbol() + "@" + Each.class.getCanonicalName());
-                    String amount = qty.getValue().toString();//WMSUnits.getQuantity(qty.getValue().doubleValue(), qty.getUnit().getSymbol()).toString();
+                    var amount = qty.getValue().toString();//WMSUnits.getQuantity(qty.getValue().doubleValue(), qty.getUnit().getSymbol()).toString();
                     st.setString(index + 1, amount);
                     if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace("Binding [{}@{}] to parameter [{}]", qty.getUnit().getSymbol(), Each.class.getCanonicalName(), index);
+                        LOGGER.trace("Binding [{}] to parameter [{}]", amount, (index + 1));
+                    }
+                    return;
+                } else {
+                    st.setString(index, qty.getUnit().getSymbol() + "@" + qty.getUnit().getName());
+                    var amount = qty.getValue().toString();//WMSUnits.getQuantity(qty.getValue().doubleValue(), qty.getUnit().getSymbol()).toString();
+                    st.setString(index + 1, amount);
+                    if (LOGGER.isTraceEnabled()) {
+                        LOGGER.trace("Binding [{}@{}] to parameter [{}]", qty.getUnit().getSymbol(), qty.getUnit().getName(), index);
                         LOGGER.trace("Binding [{}] to parameter [{}]", amount, (index + 1));
                     }
                     return;

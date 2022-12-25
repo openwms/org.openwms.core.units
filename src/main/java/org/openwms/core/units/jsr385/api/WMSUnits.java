@@ -17,15 +17,19 @@ package org.openwms.core.units.jsr385.api;
 
 import org.openwms.core.units.api.UnitConversionException;
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.format.UnitStyle;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.ProductUnit;
+import tech.units.indriya.unit.Units;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.lang.String.format;
 
@@ -38,6 +42,14 @@ public class WMSUnits {
 
     public static final Unit<Dimensionless> EACH = new ProductUnit(AbstractUnit.ONE);//<Dimensionless>.AbstractUnit.ONE;
     public static final Unit<Dimensionless> DOZEN = AbstractUnit.ONE;
+    public static final WMSUnits INSTANCE = new WMSUnits();
+    protected final Set<Unit<?>> units = new HashSet<>();
+    //public static final Unit<Mass> CARAT_METRIC = addUnit(GRAM.divide(5));
+
+    private static <U extends Unit<Q>, Q extends Quantity<Q>> U addUnit(U unit) {
+        INSTANCE.units.add(unit);
+        return unit;
+    }
 
     private WMSUnits() { }
 
@@ -68,11 +80,17 @@ public class WMSUnits {
         if (Each.class.getSimpleName().equals(shortUnitType) && "PC".equals(unit)) {
             return Each.of(0).getUnit();
         }
-        else if(Dozen.class.getSimpleName().equals(shortUnitType) && "DOZ".equals(unit)) {
+        else if (Dozen.class.getSimpleName().equals(shortUnitType) && "DOZ".equals(unit)) {
             return Dozen.of(0).getUnit();
         }
-        throw new UnitConversionException(format("Not a supported unit [%s / %s]", unit, shortUnitType));
+        var result = Units.getInstance().getUnit(unit, UnitStyle.NAME_AND_SYMBOL, true);
+        if (result == null) {
+            // FIXME [openwms]: 26.12.22 Here we ran into a problem because of JSR quanitites (NumberQuantities) may not have a symbol nor a name
+            throw new UnitConversionException(format("Not a supported unit [%s / %s]", unit, shortUnitType));
+        }
+        return result;
     }
+
     public static Unit<?> resolve(String unitType) {
         if (Each.class.getCanonicalName().equals(unitType)) {
             return Each.of(0).getUnit();
