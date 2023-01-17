@@ -10,7 +10,7 @@
         <relativePath />
     </parent>
     <artifactId>org.openwms.core.units</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.5.0-JSR385-SNAPSHOT</version>
     <name>OpenWMS.org CORE: Units</name>
     <url>https://openwms.github.io/${project.artifactId}/index.html</url>
 
