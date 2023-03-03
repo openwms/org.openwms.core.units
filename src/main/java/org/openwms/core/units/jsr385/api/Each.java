@@ -18,7 +18,6 @@ package org.openwms.core.units.jsr385.api;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.BaseUnit;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -32,11 +31,11 @@ import java.io.Serializable;
  */
 public final class Each<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
 
-    public static final Unit<Dimensionless> EACH_UNIT = new BaseUnit<>("PC", "Each", AbstractQuantity.ONE.getUnit().getDimension());
+    public static final Unit EACH_UNIT = new EachUnit();//new BaseUnit<>("PC", "Each", AbstractQuantity.ONE.getUnit().getDimension());
     private final Quantity<Q> delegate;
 
     private Each(Quantity<Q> delegate) {
-        super(delegate.getUnit());
+        super(new EachUnit<Q>());
         this.delegate = delegate;
     }
 

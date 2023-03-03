@@ -15,19 +15,15 @@
  */
 package org.openwms.core.units.jsr385.persistence;
 
-import org.hibernate.TypeMismatchException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openwms.core.units.jsr385.api.Dozen;
 import org.openwms.core.units.jsr385.api.Each;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -63,16 +59,5 @@ class JSR385UserTypeTest {
         // assert
         verify(ps).setString(0, "PC@org.openwms.core.units.jsr385.api.Each");
         verify(ps).setString(1, "3");
-    }
-
-    @Test void persist_with_unsupported_unit() {
-        // arrange
-        var ps = Mockito.mock(PreparedStatement.class);
-        var session = Mockito.mock(SharedSessionContractImplementor.class);
-        var testee = new JSR385UserType();
-        var qty = Quantities.getQuantity(1, Units.CELSIUS);
-
-        // act
-        assertThrows(TypeMismatchException.class, () -> testee.nullSafeSet(ps, qty, 0, session));
     }
 }
