@@ -22,7 +22,7 @@
     <distributionManagement>
         <site>
             <id>site</id>
-            <url>scm:git:git@github.com:openwms/${project.artifactId}.git</url>
+            <url>scm:git:ssh://git@github.com:openwms/${project.artifactId}.git</url>
         </site>
     </distributionManagement>
 
@@ -88,13 +88,6 @@
     </reporting>
 
     <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>${wagon-ssh.version}</version>
-            </extension>
-        </extensions>
         <finalName>openwms-core-units</finalName>
         <plugins>
             <plugin>
