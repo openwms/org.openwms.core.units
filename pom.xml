@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openwms</groupId>
         <artifactId>org.openwms.parent</artifactId>
-        <version>21</version>
+        <version>24</version>
         <relativePath />
     </parent>
     <artifactId>org.openwms.core.units</artifactId>
@@ -131,6 +131,7 @@
             <groupId>com.github.dozermapper</groupId>
             <artifactId>dozer-core</artifactId>
             <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.interface21</groupId>
