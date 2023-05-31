@@ -35,3 +35,17 @@ This is a limitation down to the source code level that needs to be solved.
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Quality](https://sonarcloud.io/api/project_badges/measure?project=org.openwms:org.openwms.core.units&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.openwms:org.openwms.core.units)
 [![Join the chat at https://gitter.im/openwms/org.openwms](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openwms/org.openwms?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+### How to release
+
+A release is built from the `master` branch. At first all required feature branches need to be merged into the `master` branch. Only if
+the `master` branch builds successfully the release can be done. We follow the simple [Feature branch principle](https://de.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow)
+
+Checkout the master branch and build it locally with Javadocs and sources. Then use the release plugin to setup versions, git tags and
+upload to artifact repository.
+
+ ````
+ $ mvn clean package -Drelease
+ $ mvn release:prepare
+ $ mvn release:perform
+ ````
