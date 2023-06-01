@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openwms</groupId>
         <artifactId>org.openwms.parent</artifactId>
-        <version>24</version>
+        <version>23</version>
         <relativePath />
     </parent>
     <artifactId>org.openwms.core.units</artifactId>
@@ -65,6 +65,7 @@
 
     <properties>
         <indriya.version>2.0</indriya.version>
+        <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
     </properties>
 
     <reporting>
@@ -106,6 +107,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
             </plugin>
         </plugins>
     </build>
