@@ -64,8 +64,6 @@
 
     <properties>
         <indriya.version>2.0</indriya.version>
-        <maven-site-plugin.version>4.0.0-M8</maven-site-plugin.version>
-        <maven-project-info-reports-plugin.version>3.4.4</maven-project-info-reports-plugin.version>
     </properties>
 
     <reporting>
