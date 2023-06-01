@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openwms</groupId>
         <artifactId>org.openwms.parent</artifactId>
-        <version>23</version>
+        <version>24</version>
         <relativePath />
     </parent>
     <artifactId>org.openwms.core.units</artifactId>
@@ -29,7 +29,7 @@
     <scm>
         <url>https://github.com/openwms/${project.artifactId}</url>
         <connection>scm:git:https://${scmuser}github.com/openwms/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:https://${scmuser}github.com/openwms/${project.artifactId}.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/openwms/${project.artifactId}.git</developerConnection>
     </scm>
 
     <developers>
@@ -65,7 +65,6 @@
 
     <properties>
         <indriya.version>2.0</indriya.version>
-        <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
     </properties>
 
     <reporting>
@@ -112,7 +111,6 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven-release-plugin.version}</version>
                 <configuration>
-                    <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
