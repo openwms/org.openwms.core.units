@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * This package contains the unit types and interface definitions used in client API.
+ * This package is the base package of the units library and contains common types.
  */
-package org.openwms.core.units.api;
+package org.openwms.core.units;

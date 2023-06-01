@@ -35,6 +35,18 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Site
+        run: >
+          ./mvnw post-integration-test site scm-publish:publish-scm
+          -DsurefireArgs=-Dspring.profiles.active=TEST
+          -Dargs=-Dspring.profiles.active=TEST
+          -Dscmuser=$PUSHKEY
+          -Dscmpublish.pubScmUrl=scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.common.service.git
+          -DdeveloperConnectionUrl=scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.common.service.git
+          -Dci.buildNumber=$GITHUB_RUN_NUMBER
+          -Prelease,coverage -B $MAVEN_OPTS
+        env:
+          PUSHKEY: ${{ secrets.PUSHKEY }}
       - name: Sonar
         run: >
           ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar

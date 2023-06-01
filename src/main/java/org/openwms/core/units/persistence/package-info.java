@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * This package contains the unit types and interface definitions used in client API.
+ * This package contains types used in the persistence layer.
  */
-package org.openwms.core.units.api;
+package org.openwms.core.units.persistence;
