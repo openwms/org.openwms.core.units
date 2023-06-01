@@ -3,7 +3,7 @@ This library defines some basic UOM (Unit Of Measure) types for OpenWMS.org. Bes
 persistence layer and an API that uses [Jackson](https://github.com/FasterXML/jackson).
 
 # Motivation
-The motivation to create an own library for Units Of Measures is because a UOM is not just a simple string, nor a numeric value it always 
+The motivation to create an own library for Units Of Measures is because a UOM is not just a simple string, nor a numeric value it always
 consists of two parts: The absolute **amount** and the actual **unit**. To encapsulate these two values into one single new value for the
 use in OpenWMS.org this library exists.
 
@@ -14,17 +14,17 @@ tools for different measurement systems. After analysis of the [JSR-385 Unit Of 
 it as too complicated for our use case and started with an own and simple implementation.
 
 # Implementation
-There is a general [Measurable](./src/main/java/org/openwms/core/units/api/Measurable.java) interface that represents an UOM and offers 
+There is a general [Measurable](../../src/main/java/org/openwms/core/units/api/Measurable.java) interface that represents an UOM and offers
 functionality to add and substract other Measurables. Arbitrary classes may implement this interface where those classes must take care of
 the generic type nature of this interface in order to not compare apples with pears.
 
 # Extendability
-If someone wants to add additional units of measures, the [Measurable](./src/main/java/org/openwms/core/units/api/Measurable.java) interface
-needs to be implemented and registered in several converter classes, see the [Piece](./src/main/java/org/openwms/core/units/api/Piece.java)
+If someone wants to add additional units of measures, the [Measurable](../../src/main/java/org/openwms/core/units/api/Measurable.java) interface
+needs to be implemented and registered in several converter classes, see the [Piece](../../src/main/java/org/openwms/core/units/api/Piece.java)
 class for an example.
 
 # Shortcomings
-Even the [Measurable](./src/main/java/org/openwms/core/units/api/Measurable.java) is strictly typed in the type of the amount and the unit, 
+Even the [Measurable](../../src/main/java/org/openwms/core/units/api/Measurable.java) is strictly typed in the type of the amount and the unit,
 the usage of this generic typed classes is cumbersome in Java. At least for the persistence layer with JPA this is awkward and annoying. So
 instead of using typed interfaces in JPA entity classes we often use the raw type and check the correct type instance afterward in code.
 This is a limitation down to the source code level that needs to be addressed.
