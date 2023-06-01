@@ -22,7 +22,7 @@
     <distributionManagement>
         <site>
             <id>site</id>
-            <url>scm:git:ssh://git@github.com:openwms/${project.artifactId}.git</url>
+            <url>scm:git:https://github.com/openwms/${project.artifactId}.git</url>
         </site>
     </distributionManagement>
 
@@ -111,8 +111,9 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven-release-plugin.version}</version>
                 <configuration>
-                    <releaseProfiles>release</releaseProfiles>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy site scm-publish:publish-scm</goals>
+                    <releaseProfiles>release,release-project</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>
@@ -220,4 +221,15 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <id>release-project</id>
+            <properties>
+                <developerConnectionUrl>scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.common.service.git</developerConnectionUrl>
+                <scmpublish.pubScmUrl>scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.common.service.git</scmpublish.pubScmUrl>
+                <distributionManagement.site.url>scm:git:git@github.com:openwms/org.openwms.git</distributionManagement.site.url>
+            </properties>
+        </profile>
+    </profiles>
 </project>
