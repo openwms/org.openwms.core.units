@@ -67,8 +67,6 @@ public interface Measurable<V extends Number, E extends Measurable<V, E, T>, T e
     E convertTo(T unit);
 
     /**
-     * {@inheritDoc}
-     *
      * Return a combination of amount and unit, e.g. 24 PC
      */
     default String asString() {

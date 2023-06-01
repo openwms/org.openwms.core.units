@@ -226,8 +226,8 @@
         <profile>
             <id>release-project</id>
             <properties>
-                <developerConnectionUrl>scm:git:https://$PUSHKEY@github.com/openwms/${project.artifactId}.git</developerConnectionUrl>
-                <scmpublish.pubScmUrl>scm:git:https://$PUSHKEY@github.com/openwms/${project.artifactId}.git</scmpublish.pubScmUrl>
+                <developerConnectionUrl>scm:git:https://openwms@github.com/openwms/${project.artifactId}.git</developerConnectionUrl>
+                <scmpublish.pubScmUrl>scm:git:https://openwms@github.com/openwms/${project.artifactId}.git</scmpublish.pubScmUrl>
                 <distributionManagement.site.url>scm:git:git@github.com:openwms/${project.artifactId}.git</distributionManagement.site.url>
             </properties>
         </profile>
