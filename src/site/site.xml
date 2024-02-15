@@ -31,7 +31,7 @@
     <body>
         <menu name="Documentation">
             <item name="Home" href="index.html" />
-            <item name="Wiki" href="https://wiki.butan092.startdedicated.de/projects/core-units/wiki" />
+            <item name="Wiki" href="https://wiki.openwms.cloud/projects/core-units/wiki" />
             <item name="Javadoc" href="apidocs/index.html" />
             <item name="Sonar" href="https://sonarcloud.io/dashboard?id=org.openwms:${project.artifactId}" />
             <item name="Jacoco" href="jacoco-merged-test-coverage-report/index.html" />
