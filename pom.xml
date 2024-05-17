@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openwms</groupId>
         <artifactId>org.openwms.parent</artifactId>
-        <version>25</version>
+        <version>26</version>
         <relativePath />
     </parent>
     <artifactId>org.openwms.core.units</artifactId>
@@ -63,6 +63,8 @@
     </ciManagement>
 
     <properties>
+        <dozer-core.version>6.5.2</dozer-core.version>
+        <hibernate-core.version>6.4.4.Final</hibernate-core.version>
         <indriya.version>2.0</indriya.version>
     </properties>
 
@@ -111,6 +113,16 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.github.dozermapper</groupId>
+                <artifactId>dozer-core</artifactId>
+                <version>${dozer-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate-core.version}</version>
+            </dependency>
             <dependency>
                 <groupId>tech.units</groupId>
                 <artifactId>indriya</artifactId>
