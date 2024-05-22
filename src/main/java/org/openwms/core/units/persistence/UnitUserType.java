@@ -26,8 +26,6 @@ import org.openwms.core.units.api.Piece;
 import org.openwms.core.units.api.PieceUnit;
 import org.openwms.core.units.api.Weight;
 import org.openwms.core.units.api.WeightUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -43,10 +41,8 @@ import static java.lang.String.format;
  */
 public class UnitUserType implements CompositeUserType<Measurable> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnitUserType.class);
-
     public static class MeasurableMapper {
-        String magnitude;
+        BigDecimal magnitude;
         String unitType;
     }
 
@@ -83,13 +79,11 @@ public class UnitUserType implements CompositeUserType<Measurable> {
     @Override
     public Object getPropertyValue(Measurable component, int property) throws HibernateException {
         // alphabetical
-        switch ( property ) {
-            case 0:
-                return component.getMagnitude();
-            case 1:
-                return component.getUnitType();
-        }
-        return null;
+        return switch (property) {
+            case 0 -> component.getMagnitude();
+            case 1 -> component.getUnitType();
+            default -> null;
+        };
     }
 
     @Override
@@ -115,7 +109,7 @@ public class UnitUserType implements CompositeUserType<Measurable> {
 
     @Override
     public Serializable disassemble(Measurable value) {
-        return new String[] { value.getMagnitude().toString(), value.getUnitType().toString() };
+        return new String[] { value.getMagnitude().toString(), "%s@%s".formatted(value.getUnitType().name(), value.getClass().toString()) };
     }
 
     @Override
@@ -138,6 +132,4 @@ public class UnitUserType implements CompositeUserType<Measurable> {
     public Measurable replace(Measurable detached, Measurable managed, Object owner) {
         return detached;
     }
-
-
 }
