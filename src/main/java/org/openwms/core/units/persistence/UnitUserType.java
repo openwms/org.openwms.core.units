@@ -28,7 +28,6 @@ import org.openwms.core.units.api.Weight;
 import org.openwms.core.units.api.WeightUnit;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -42,7 +41,7 @@ import static java.lang.String.format;
 public class UnitUserType implements CompositeUserType<Measurable> {
 
     public static class MeasurableMapper {
-        BigDecimal magnitude;
+        String magnitude;
         String unitType;
     }
 
@@ -59,20 +58,20 @@ public class UnitUserType implements CompositeUserType<Measurable> {
     @Override
     public Measurable instantiate(ValueAccess valueAccess, SessionFactoryImplementor sessionFactory) {
         // alphabetical
-        final var magnitude = valueAccess.getValue( 0, BigDecimal.class );
+        final var magnitude = valueAccess.getValue( 0, String.class );
         final var fullUnitType = valueAccess.getValue( 1, String.class );
         if (fullUnitType == null) {
             return null;
         }
 
-        String[] val = fullUnitType.split("@");
+        var val = fullUnitType.split("@");
         var unitType = val[0];
         var unitTypeClass = val[1];
 
         if (Piece.class.getCanonicalName().equals(unitTypeClass)) {
-            return Piece.of(magnitude, PieceUnit.valueOf(unitType));
+            return Piece.of(Integer.parseInt(magnitude), PieceUnit.valueOf(unitType));
         } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {
-            return Weight.of(magnitude, WeightUnit.valueOf(unitType));
+            return Weight.of(Integer.parseInt(magnitude), WeightUnit.valueOf(unitType));
         }
         throw new TypeMismatchException(format("Incompatible type: [%s]", fullUnitType));
     }
@@ -81,7 +80,7 @@ public class UnitUserType implements CompositeUserType<Measurable> {
     public Object getPropertyValue(Measurable component, int property) throws HibernateException {
         // alphabetical
         return switch (property) {
-            case 0 -> component.getMagnitude();
+            case 0 -> "%s".formatted(component.getMagnitude());
             case 1 -> "%s@%s".formatted(component.getUnitType().name(), component.getClass().getCanonicalName());
             default -> null;
         };
@@ -117,15 +116,15 @@ public class UnitUserType implements CompositeUserType<Measurable> {
     public Measurable assemble(Serializable cached, Object owner) {
         final String[] parts = (String[]) cached;
 
-        String[] val = parts[1].split("@");
-        String unitType = val[0];
-        String unitTypeClass = val[1];
+        var val = parts[1].split("@");
+        var unitType = val[0];
+        var unitTypeClass = val[1];
 
         if (Piece.class.getCanonicalName().equals(unitTypeClass)) {
             return Piece.of(Integer.parseInt(parts[0]), PieceUnit.valueOf(unitType));
         } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {
             return Weight.of(Integer.parseInt(parts[0]), WeightUnit.valueOf(unitType));
-        };
+        }
         throw new TypeMismatchException(format("Incompatible type: [%s]", unitTypeClass));
     }
 
