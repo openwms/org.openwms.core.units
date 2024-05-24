@@ -59,21 +59,22 @@ public class UnitUserType implements CompositeUserType<Measurable> {
     @Override
     public Measurable instantiate(ValueAccess valueAccess, SessionFactoryImplementor sessionFactory) {
         // alphabetical
-        final BigDecimal magnitude = valueAccess.getValue( 0, BigDecimal.class );
-        final String fullUnitType = valueAccess.getValue( 1, String.class );
+        final var magnitude = valueAccess.getValue( 0, BigDecimal.class );
+        final var fullUnitType = valueAccess.getValue( 1, String.class );
         if (fullUnitType == null) {
             return null;
         }
+
         String[] val = fullUnitType.split("@");
-        String unitType = val[0];
-        String unitTypeClass = val[1];
+        var unitType = val[0];
+        var unitTypeClass = val[1];
 
         if (Piece.class.getCanonicalName().equals(unitTypeClass)) {
             return Piece.of(magnitude, PieceUnit.valueOf(unitType));
         } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {
             return Weight.of(magnitude, WeightUnit.valueOf(unitType));
         }
-        throw new TypeMismatchException(format("Incompatible type: [%s]", unitTypeClass));
+        throw new TypeMismatchException(format("Incompatible type: [%s]", fullUnitType));
     }
 
     @Override
@@ -81,7 +82,7 @@ public class UnitUserType implements CompositeUserType<Measurable> {
         // alphabetical
         return switch (property) {
             case 0 -> component.getMagnitude();
-            case 1 -> component.getUnitType();
+            case 1 -> "%s@%s".formatted(component.getUnitType().name(), component.getClass().getCanonicalName());
             default -> null;
         };
     }
