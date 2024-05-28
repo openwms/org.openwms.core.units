@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnitUserType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OpenWMS.org CORE: Units</a> &gt; <a href="index.source.html" class="el_package">org.openwms.core.units.persistence</a> &gt; <span class="el_source">UnitUserType.java</span></div><h1>UnitUserType.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2005-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.openwms.core.units.persistence;
+
+import org.hibernate.HibernateException;
+import org.hibernate.TypeMismatchException;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.metamodel.spi.ValueAccess;
+import org.hibernate.usertype.CompositeUserType;
+import org.openwms.core.units.api.AbstractMeasure;
+import org.openwms.core.units.api.Measurable;
+import org.openwms.core.units.api.Piece;
+import org.openwms.core.units.api.PieceUnit;
+import org.openwms.core.units.api.Weight;
+import org.openwms.core.units.api.WeightUnit;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import static java.lang.String.format;
+
+/**
+ * An UnitUserType is used by Hibernate as converter for custom {@code Unit} types. Only subclasses of {@link AbstractMeasure} are supported
+ * by this type converter.
+ *
+ * @author Heiko Scherrer
+ */
+<span class="nc" id="L41">public class UnitUserType implements CompositeUserType&lt;Measurable&gt; {</span>
+
+<span class="nc" id="L43">    public static class MeasurableMapper {</span>
+        String magnitude;
+        String unitType;
+    }
+
+    @Override
+    public Class&lt;?&gt; embeddable() {
+<span class="nc" id="L50">        return MeasurableMapper.class;</span>
+    }
+
+    @Override
+    public Class&lt;Measurable&gt; returnedClass() {
+<span class="nc" id="L55">        return Measurable.class;</span>
+    }
+
+    @Override
+    public Measurable instantiate(ValueAccess valueAccess, SessionFactoryImplementor sessionFactory) {
+        // alphabetical
+<span class="nc" id="L61">        final var magnitude = valueAccess.getValue( 0, String.class );</span>
+<span class="nc" id="L62">        final var fullUnitType = valueAccess.getValue( 1, String.class );</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (fullUnitType == null) {</span>
+<span class="nc" id="L64">            return null;</span>
+        }
+
+<span class="nc" id="L67">        var val = fullUnitType.split(&quot;@&quot;);</span>
+<span class="nc" id="L68">        var unitType = val[0];</span>
+<span class="nc" id="L69">        var unitTypeClass = val[1];</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (Piece.class.getCanonicalName().equals(unitTypeClass)) {</span>
+<span class="nc" id="L72">            return Piece.of(Integer.parseInt(magnitude), PieceUnit.valueOf(unitType));</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {</span>
+<span class="nc" id="L74">            return Weight.of(Integer.parseInt(magnitude), WeightUnit.valueOf(unitType));</span>
+        }
+<span class="nc" id="L76">        throw new TypeMismatchException(format(&quot;Incompatible type: [%s]&quot;, fullUnitType));</span>
+    }
+
+    @Override
+    public Object getPropertyValue(Measurable component, int property) throws HibernateException {
+        // alphabetical
+<span class="nc bnc" id="L82" title="All 3 branches missed.">        return switch (property) {</span>
+<span class="nc" id="L83">            case 0 -&gt; &quot;%s&quot;.formatted(component.getMagnitude());</span>
+<span class="nc" id="L84">            case 1 -&gt; &quot;%s@%s&quot;.formatted(component.getUnitType().name(), component.getClass().getCanonicalName());</span>
+<span class="nc" id="L85">            default -&gt; null;</span>
+        };
+    }
+
+    @Override
+    public boolean equals(Measurable x, Measurable y) {
+<span class="nc bnc" id="L91" title="All 6 branches missed.">        return x == y || x != null &amp;&amp; Objects.equals( x.getMagnitude(), y.getMagnitude() )</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                &amp;&amp; Objects.equals( x.getUnitType(), y.getUnitType() );</span>
+    }
+
+    @Override
+    public int hashCode(Measurable x) {
+<span class="nc" id="L97">        return Objects.hash( x.getMagnitude(), x.getUnitType() );</span>
+    }
+
+    @Override
+    public Measurable deepCopy(Measurable value) {
+<span class="nc" id="L102">        return value; // immutable</span>
+    }
+
+    @Override
+    public boolean isMutable() {
+<span class="nc" id="L107">        return false;</span>
+    }
+
+    @Override
+    public Serializable disassemble(Measurable value) {
+<span class="nc" id="L112">        return new String[] { value.getMagnitude().toString(), &quot;%s@%s&quot;.formatted(value.getUnitType().name(), value.getClass().toString()) };</span>
+    }
+
+    @Override
+    public Measurable assemble(Serializable cached, Object owner) {
+<span class="nc" id="L117">        final String[] parts = (String[]) cached;</span>
+
+<span class="nc" id="L119">        var val = parts[1].split(&quot;@&quot;);</span>
+<span class="nc" id="L120">        var unitType = val[0];</span>
+<span class="nc" id="L121">        var unitTypeClass = val[1];</span>
+
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (Piece.class.getCanonicalName().equals(unitTypeClass)) {</span>
+<span class="nc" id="L124">            return Piece.of(Integer.parseInt(parts[0]), PieceUnit.valueOf(unitType));</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        } else if (Weight.class.getCanonicalName().equals(unitTypeClass)) {</span>
+<span class="nc" id="L126">            return Weight.of(Integer.parseInt(parts[0]), WeightUnit.valueOf(unitType));</span>
+        }
+<span class="nc" id="L128">        throw new TypeMismatchException(format(&quot;Incompatible type: [%s]&quot;, unitTypeClass));</span>
+    }
+
+    @Override
+    public Measurable replace(Measurable detached, Measurable managed, Object owner) {
+<span class="nc" id="L133">        return detached;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
