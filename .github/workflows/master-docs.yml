@@ -45,10 +45,11 @@ jobs:
           -DsurefireArgs=-Dspring.profiles.active=TEST
           -Dargs=-Dspring.profiles.active=TEST
           -Dscmpublish.pubScmUrl=scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.core.units.git
+          -DdeveloperConnectionUrl=scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.core.units.lib.git
           -Dci.buildNumber=$GITHUB_RUN_NUMBER
           -Prelease,coverage -B $MAVEN_OPTS
         env:
-          PUSHKEY: ${{ secrets.PUSHKEY }}
+          PUSHKEY: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.PUSHKEY }}
           GITHUB_USER: ${{ secrets.GH_USER }}
           GITHUB_PASSWORD: ${{ secrets.GH_PASSWORD }}
