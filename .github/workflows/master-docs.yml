@@ -44,7 +44,6 @@ jobs:
           ./mvnw post-integration-test site scm-publish:publish-scm
           -DsurefireArgs=-Dspring.profiles.active=TEST
           -Dargs=-Dspring.profiles.active=TEST
-          -Dscmuser=$PUSHKEY
           -Dscmpublish.pubScmUrl=scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.core.units.git
           -DdeveloperConnectionUrl=scm:git:https://openwms:$PUSHKEY@github.com/openwms/org.openwms.core.units.git
           -Dci.buildNumber=$GITHUB_RUN_NUMBER
