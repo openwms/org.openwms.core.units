@@ -44,12 +44,9 @@ jobs:
           ./mvnw post-integration-test site scm-publish:publish-scm
           -DsurefireArgs=-Dspring.profiles.active=TEST
           -Dargs=-Dspring.profiles.active=TEST
-          -Dscmpublish.pubScmUrl=scm:git:https://$PUSHKEY@github.com/openwms/org.openwms.core.units.git
-          -DdeveloperConnectionUrl=scm:git:https://$PUSHKEY@github.com/openwms/org.openwms.core.units.git
+          -Dscmpublish.pubScmUrl=scm:git:https://github.com/openwms/org.openwms.core.units.git
           -Dci.buildNumber=$GITHUB_RUN_NUMBER
           -Prelease,coverage -B $MAVEN_OPTS
-        env:
-          PUSHKEY: ${{ secrets.PUSHKEY }}
       - name: Sonar
         run: >
           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar
