@@ -49,6 +49,8 @@ jobs:
           -Prelease,coverage -B $MAVEN_OPTS
         env:
           PUSHKEY: ${{ secrets.PUSHKEY }}
+          GH_USER: ${{ secrets.GITHUB_USER }}
+          GH_PASSWORD: ${{ secrets.GITHUB_PASSWORD }}
       - name: Sonar
         run: >
           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar
