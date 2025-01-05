@@ -48,5 +48,5 @@ class EnsureArchitectureIT {
 
     @ArchTest
     public static final ArchRule verify_no_cycles =
-            slices().matching("..(*).").should().beFreeOfCycles();
+            slices().matching("(org.openwms.*..)").should().beFreeOfCycles();
 }
