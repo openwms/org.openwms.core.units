@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openwms</groupId>
         <artifactId>org.openwms.parent</artifactId>
-        <version>27.1</version>
+        <version>27.2</version>
         <relativePath />
     </parent>
     <artifactId>org.openwms.core.units</artifactId>
@@ -32,7 +32,7 @@
 
     <properties>
         <dozer-core.version>6.5.2</dozer-core.version>
-        <hibernate-core.version>6.6.2.Final</hibernate-core.version>
+        <hibernate-core.version>6.6.5.Final</hibernate-core.version>
         <indriya.version>2.0</indriya.version>
     </properties>
 
