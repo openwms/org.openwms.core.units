@@ -33,6 +33,7 @@ This is a limitation down to the source code level that needs to be addressed.
 [![Build status](https://github.com/openwms/org.openwms.core.units/actions/workflows/master-build.yml/badge.svg)](https://github.com/openwms/org.openwms.core.units/actions/workflows/master-build.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Quality](https://sonarcloud.io/api/project_badges/measure?project=org.openwms:org.openwms.core.units&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.openwms:org.openwms.core.units)
+[![Maven central](https://img.shields.io/maven-central/v/org.openwms/org.openwms.core.units)](https://search.maven.org/search?q=a:org.openwms.core.units)
 [![Join the chat at https://gitter.im/openwms/org.openwms](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openwms/org.openwms?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### How to release

@@ -42,8 +42,8 @@ the `master` branch builds successfully the release can be done. We follow the s
 Checkout the master branch and build it locally with Javadocs and sources. Then use the release plugin to setup versions, git tags and
 upload to artifact repository.
 
- ````
- $ mvn clean package -Drelease
- $ mvn release:prepare
- $ mvn release:perform
- ````
+````
+$ mvn clean package -Drelease
+$ mvn release:prepare
+$ mvn release:perform
+````
